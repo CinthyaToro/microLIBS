@@ -1,0 +1,9 @@
+{
+  "created_iso": "2026-05-31T00:00:00",
+  "note": "Plan congelado para el golden run. 3 puntos dentro del rango thorlabs_sim (0-4 mm). No modificar.",
+  "points": [
+    {"i": 0, "px": 100, "py": 100, "x_mm": 0.5, "y_mm": 0.5},
+    {"i": 1, "px": 200, "py": 100, "x_mm": 1.0, "y_mm": 0.5},
+    {"i": 2, "px": 100, "py": 200, "x_mm": 0.5, "y_mm": 1.0}
+  ]
+}

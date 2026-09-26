@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Datos de diagnóstico y temporales
+data_diag/
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Salidas de sesión temporales (raíz)
+espectro.csv
+espectro_neto.csv
+espectro_neto.xlsx
+fondo.csv
+espectro_0*.csv
+prompt_calibracion.txt
+
+# Salidas de laboratorio (carpetas con timestamp) - se archivan fuera del repo
+frames_*/
+diag_*/
+
+# Manuscrito: los .docx son derivados de manuscrito.md
+# Se regeneran con: python tools/exportar_docx.py
+docs/paper/*.docx

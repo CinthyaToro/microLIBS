@@ -1,0 +1,75 @@
+{
+  "_schema": "microlibs.spectrometer_profile.v1",
+  "_note": "Perfil de plataforma nivel 1 — no cambia entre sesiones salvo cambio de hardware.",
+
+  "system": "Ocean Optics LIBS2500plus",
+  "library": "seabreeze 2.4.0",
+  "backend": "pyseabreeze",
+  "python_arch": "64-bit CPython 3.7.9",
+  "os": "Windows 10",
+
+  "trigger": {
+    "mode_libs": 3,
+    "mode_description": "External Hardware Edge (flanco TTL externo)",
+    "pin": "LAMP SYNC — BNC panel trasero del rack LIBS2500plus",
+    "source": "SYNC OUT del power supply PS8001DR-48 (EKSPLA NL301)",
+    "cable": "BNC macho-macho, SYNC OUT → LAMP SYNC",
+    "verified": "2026-05-29",
+    "note": "Modo 4 no responde al pin LAMP SYNC. Modo 3 pendiente de verificar con plasma."
+  },
+
+  "integration": {
+    "default_us": 10000,
+    "libs_recommended_us": 2100,
+    "minimum_us": 2100,
+    "note_libs": "2100 µs = mínimo del HR2000+. Minimiza ruido post-plasma (emisión dura ~1-50 µs)."
+  },
+
+  "channels": {
+    "A": {
+      "serial": "HR+C1911",
+      "range_nm": [293.8, 390.1],
+      "dark_mean_counts": 752,
+      "dark_int_us": 10000,
+      "color_plot": "#00BFFF"
+    },
+    "B": {
+      "serial": "HR+C1912",
+      "range_nm": [388.8, 518.3],
+      "dark_mean_counts": 988,
+      "dark_int_us": 10000,
+      "color_plot": "#FF8C00"
+    },
+    "C": {
+      "serial": "HR+C1914",
+      "range_nm": [519.6, 636.3],
+      "dark_mean_counts": 988,
+      "dark_int_us": 10000,
+      "color_plot": "#FF8C00"
+    },
+    "D": {
+      "serial": "HR+C1915",
+      "range_nm": [624.0, 728.9],
+      "dark_mean_counts": 570,
+      "dark_int_us": 10000,
+      "color_plot": "#BF5FFF"
+    }
+  },
+
+  "channel_order_rule": "Ordenados por serial alfanumérico: HR+C1911 < HR+C1914 < HR+C1915 → A, B, C.",
+
+  "coverage_gap_nm": [390, 520],
+  "coverage_gap_note": "Ningún módulo cubre 390–520 nm. Es la óptica disponible, no un bug.",
+
+  "overlap_zone_nm": [624, 636],
+  "overlap_note": "Zona de solape B/C. Intensidades no empalman por diferencia de respuesta radiométrica. Calibración relativa pendiente (ver PROGRESS.md sección L).",
+
+  "dark_files_dir": "data/",
+  "dark_n_avg": 10,
+
+  "libusb_patch_required": true,
+  "libusb_patch_note": "Windows: pyusb no encuentra libusb automáticamente. Parche via libusb_package aplicado en _connect_hardware() y spec_probe.py.",
+
+  "validated_date": "2026-05-29",
+  "validated_with": "LED blanco de celular — joroba ~560nm visible en canal B (VIS), canal A (UV) plano esperado."
+}

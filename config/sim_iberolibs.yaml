@@ -1,0 +1,61 @@
+# microLIBS iberoLIBS 2026 — Configuración SIMULACIÓN (todo simulado)
+# Copiar a session_dir/experiment.yaml para ejecutar sin hardware
+# Coincide con estructura de lab_iberolibs.yaml, solo drivers = "sim"
+
+experiment:
+  name: "iberolibs_2026_simulacion"
+  sample_name: "muestra_plastico_sim"
+  operator: "simulador"
+  base_dir: "~/microLIBS_captures"
+
+hardware:
+  stage_driver: "sim"             # Simulado: acepta cualquier coordenada
+  stage_port: ""                  # No usado en simulación
+  trigger_mode: "soft_delay"      # soft_delay | ttl_arduino | none
+  camera_backend: "sim"           # Simulado: carga imagen de calibración (data_libs/)
+  camera_id: "sim"                # ID no usado para sim
+  use_arduino: false
+  arduino_port: ""
+  arduino_baud: 115200
+
+scan:
+  settle_s: 0.20                  # Estabilización post-movimiento
+  max_points: 0                   # 0 = usar todos
+  stop_on_error: true             # Detener si falla un punto
+  move_mode: "steps_mm"
+  step_x_mm: 0.20                 # Resolución XY del scan
+  step_y_mm: 0.20
+  origin_x_mm: 0.0
+  origin_y_mm: 0.0
+
+laser:
+  pulse_us: 200                   # Duración pulso (parámetro, sim ignora)
+  delay_us: 0                     # Pre-trigger delay
+  n_pulsos: 1                     # Pulsos por punto
+  driver: "sim"                   # Simulado: devuelve ok=True con delay
+
+spectrometer:
+  driver: "sim"                   # Simulado: genera espectros sintéticos
+  trigger_mode: 3                 # 3=HW Edge LAMP SYNC (simulado honra modo)
+  integration_us: 5000            # 5 ms (parámetro, sim respeta)
+  n_channels: 4                   # Módulos simulados
+  modulos_activos: ["HR+C1911", "HR+C1912", "HR+C1914", "HR+C1915"]  # Misma selección que lab para comparación
+  module_timeout_s: 40            # No usado en sim (nunca cuelga)
+  averages: 1                     # 1 para LIBS pulsado
+
+pipeline:
+  steps:
+    - name: s00_setup
+      critical: true
+      params: {}
+    - name: s01_calibrate
+      critical: false
+      params: {}
+    - name: s02_preview
+      critical: false
+      params: {}
+    - name: s03_scan
+      critical: false
+      params:
+        settle_s: 0.20
+        stop_on_error: true

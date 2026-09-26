@@ -1,0 +1,63 @@
+# microLIBS iberoLIBS 2026 — Configuración LABORATORIO (hardware real)
+# Copiar a session_dir/experiment.yaml para ejecutar con hardware
+
+experiment:
+  name: "iberolibs_2026_laboratorio"
+  sample_name: "muestra_plastrico"
+  operator: "operador"
+  base_dir: "~/microLIBS_captures"
+
+hardware:
+  stage_driver: "thorlabs"        # Hardware real Thorlabs Kinesis
+  stage_port: ""                  # Auto-detecta puerto via Kinesis SDK (no COM necesario)
+  trigger_mode: "soft_delay"      # soft_delay | ttl_arduino | none
+  camera_backend: "chameleon"     # Hardware real: Chameleon FLIR PointGrey
+  camera_id: 11470397             # Serial de Chameleon en labo
+  use_arduino: false
+  arduino_port: "COM3"
+  arduino_baud: 115200
+
+scan:
+  settle_s: 0.20                  # Estabilización post-movimiento
+  max_points: 0                   # 0 = usar todos (no limitar)
+  stop_on_error: true             # Detener si falla un punto
+  move_mode: "steps_mm"
+  step_x_mm: 0.20                 # Resolución XY del scan
+  step_y_mm: 0.20
+  origin_x_mm: 0.0
+  origin_y_mm: 0.0
+
+laser:
+  pulse_us: 200                   # Duración pulso EKSPLA NL230
+  delay_us: 0                     # Pre-trigger delay (barrido heurístico)
+  n_pulsos: 1                     # Pulsos por punto (LIBS: 1 es típico)
+  driver: "ekspla"                # Hardware real EKSPLA NL230
+
+spectrometer:
+  driver: "ocean"                 # Hardware real Ocean Optics seabreeze
+  trigger_mode: 3                 # 3=HW Edge LAMP SYNC (validado LIBS)
+  integration_us: 5000            # 5 ms — ajustar según respuesta plasma
+  n_channels: 4                   # Módulos HR2000+ en rack
+  # Los 4 módulos volvieron a estar operativos (sep-2026). El 1912 se dio de
+  # alta en 7b0b3df; durante el congreso se trabajó con 3 porque uno estaba roto.
+  # PENDIENTE: verificar un scan completo con los 4 antes de darlo por bueno.
+  modulos_activos: ["HR+C1911", "HR+C1912", "HR+C1914", "HR+C1915"]  # UV, azul, VIS, NIR
+  module_timeout_s: 40            # Timeout total si cuelga alguno
+  averages: 1                     # 1 para LIBS pulsado (cada pulso es único)
+
+pipeline:
+  steps:
+    - name: s00_setup
+      critical: true
+      params: {}
+    - name: s01_calibrate
+      critical: false
+      params: {}
+    - name: s02_preview
+      critical: false
+      params: {}
+    - name: s03_scan
+      critical: false
+      params:
+        settle_s: 0.20
+        stop_on_error: true

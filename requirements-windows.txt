@@ -1,0 +1,16 @@
+# microLIBS — enumeración de cámaras USB y puerto serie (solo Windows)
+#
+#   pip install -r requirements-windows.txt
+#
+# Verificado el 22-Sep-2026: instalan OK en Python 3.9 y en 3.12.
+#
+#   pygrabber  enumera cámaras DirectShow (webcams, microscopios digitales)
+#   wmi        consulta dispositivos del sistema
+#   pyserial   puerto serie (platina MoVi)
+#
+# Sin esto el selector de cámaras funciona igual, pero con menos información
+# para distinguir un dispositivo de otro.
+
+pygrabber
+wmi
+pyserial

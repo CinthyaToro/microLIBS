@@ -1,0 +1,15 @@
+# microLIBS — espectrómetro Ocean Optics HR2000+ (rack LIBS2500plus)
+#
+#   pip install -r requirements-ocean.txt
+#
+# Verificado el 22-Sep-2026: instala OK en Python 3.9 y en 3.12.
+#
+# ── Además de estos paquetes hace falta ────────────────────────────────────
+# Asignar el driver WinUSB a CADA módulo HR2000+ con Zadig. Sin eso, seabreeze
+# no ve los módulos aunque el paquete esté instalado.
+#
+# Backend: pyseabreeze (Python puro, sin DLL del fabricante).
+
+seabreeze
+pyusb
+libusb-package

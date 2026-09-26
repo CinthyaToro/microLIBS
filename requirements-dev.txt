@@ -1,0 +1,13 @@
+# microLIBS — para correr la suite de tests
+#
+#   pip install -r requirements.txt -r requirements-dev.txt
+#   python -m pytest tests/ -q
+#
+# Los 71 tests corren 100% en simulación: no necesitan ningún instrumento
+# conectado ni ninguno de los extras de hardware.
+#
+# Verificado el 22-Sep-2026 en entorno limpio:
+#   Python 3.9.12  ->  71 passed, 1 skipped
+#   Python 3.12.6  ->  71 passed, 1 skipped
+
+pytest

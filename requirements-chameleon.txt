@@ -1,0 +1,46 @@
+# microLIBS — cámara FLIR Chameleon (serial 11470397)
+#
+#   pip install -r requirements-chameleon.txt
+#
+# ⚠️ INSTALAR SOLO EN LA PC QUE TIENE LA CÁMARA CONECTADA.
+#
+# ── Restricción de versión de Python ───────────────────────────────────────
+# pyflycap2 publica wheels precompilados solo para versiones viejas de Python.
+# Verificado el 22-Sep-2026:
+#
+#   Python 3.9.12  ->  instala OK   (pyflycap2-0.3.1-cp39-cp39-win_amd64.whl)
+#   Python 3.12.6  ->  FALLA        (no hay wheel; intenta compilar y muere en
+#                                    Cython/build_ext por falta de headers del
+#                                    SDK FlyCapture2 y de compilador C)
+#
+# Mientras esta PC use la Chameleon con este driver, queda atada a un Python
+# que tenga wheel. El resto del sistema (núcleo, Ocean, Thorlabs) sí corre en
+# 3.12: se verificó por separado.
+#
+# ── Instalación OFFLINE (recomendada para la PC del laboratorio) ───────────
+# El wheel exacto que funciona está versionado en el repo, así que la
+# instalación no depende de PyPI ni de la red, y no puede cambiar con el
+# tiempo:
+#
+#     pip install --no-index --find-links wheels pyflycap2==0.3.1
+#
+#     wheels/pyflycap2-0.3.1-cp39-cp39-win_amd64.whl
+#     sha256: 7bb2832a280c8d8376e219a96dad1790dd682a18f431bf4006e639970e68fbf2
+#
+# Verificado el 22-Sep-2026 en un venv limpio de Python 3.9.12:
+# instala y el módulo importa OK.
+#
+# ── Además de este paquete hace falta ──────────────────────────────────────
+# El SDK FlyCapture2 de PointGrey/FLIR, instalado aparte (NO viene por pip).
+# El driver lo busca por defecto en:
+#     C:\Program Files\Point Grey Research\FlyCap2 Viewer\bin64
+# Se puede sobreescribir pasando dll_dir= a create_camera().
+#
+# ── Si esto bloquea actualizar Python ──────────────────────────────────────
+# FlyCapture2 es el SDK legado de FLIR. La salida de fondo es agregar un
+# segundo driver para la misma cámara sobre el SDK actual (Spinnaker/PySpin),
+# conviviendo con este. La fábrica ya lo soporta: hal/factory.py despacha por
+# nombre con imports perezosos, así que sería un `elif` más y un archivo nuevo
+# que implemente BaseCamera. Verificar antes si Spinnaker soporta este modelo.
+
+pyflycap2==0.3.1

@@ -1,0 +1,60 @@
+# microLIBS v2 — Plantilla de experimento
+# Copiar y renombrar: ej. Si_wafer_01.yaml
+
+experiment:
+  name: "experimento_plantilla"
+  sample_name: "muestra_01"
+  operator: "operador"
+  base_dir: "~/microLIBS_datos"
+
+hardware:
+  stage_driver: "thorlabs_sim"    # movi | thorlabs | thorlabs_sim | sim
+  stage_port: "COM4"
+  trigger_mode: "soft_delay"      # soft_delay | ttl_arduino | none
+  camera_backend: "opencv"        # opencv | chameleon | sim_camera
+  camera_id: 0
+  use_arduino: false
+  arduino_port: "COM3"
+  arduino_baud: 115200
+
+scan:
+  settle_s: 0.20
+  max_points: 0
+  stop_on_error: true
+  move_mode: "steps_mm"
+  step_x_mm: 0.20
+  step_y_mm: 0.20
+  origin_x_mm: 0.0
+  origin_y_mm: 0.0
+
+laser:
+  pulse_us: 200
+  delay_us: 0
+  n_pulsos: 10        # pulsos por punto de scan (experimental; optimizar por sustancia)
+  driver: null
+
+spectrometer:
+  driver: "ocean"          # "ocean" | "sim"
+  trigger_mode: 3          # 3=HW Edge LAMP SYNC (LIBS validado); 0=free-running
+  integration_us: 100000     # 100 ms — ajustar según plasma del EKSPLA
+  n_channels: 4            # módulos HR2000+ del rack
+  modulos_activos: ["HR+C1911", "HR+C1912", "HR+C1914", "HR+C1915"]  # seriales a usar; ausente/vacío = todos los que detecte seabreeze
+  module_timeout_s: 40     # timeout total (no por módulo) si uno o más cuelgan en acquire()
+  averages: 1              # 1 para LIBS pulsado (cada pulso es único)
+
+pipeline:
+  steps:
+    - name: s00_setup
+      critical: true
+      params: {}
+    - name: s01_calibrate
+      critical: false
+      params: {}
+    - name: s02_preview
+      critical: false
+      params: {}
+    - name: s03_scan
+      critical: false
+      params:
+        settle_s: 0.20
+        stop_on_error: true

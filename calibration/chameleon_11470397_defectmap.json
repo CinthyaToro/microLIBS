@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "camera_model": "CMLN-13S2M",
+  "camera_serial": "11470397",
+  "reference_dims": { "width": 1280, "height": 960 },
+  "notes": "Defectos fijos de sensor. El reflejo movil NO esta aqui: es optico.",
+  "interpolate": {
+    "columns": [
+      { "x_start": 662, "x_end": 663, "y_start": 0, "y_end": 959 },
+      { "x_start": 685, "x_end": 688, "y_start": 0, "y_end": 959 }
+    ],
+    "clusters": [
+      { "cx": 904, "cy": 601, "radius": 6 },
+      { "cx": 942, "cy": 561, "radius": 6 }
+    ]
+  }
+}

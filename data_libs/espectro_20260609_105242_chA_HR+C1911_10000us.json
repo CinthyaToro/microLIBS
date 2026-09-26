@@ -1,0 +1,15 @@
+{
+  "channel": "A",
+  "serial": "HR+C1911",
+  "range_nm": [
+    293.83,
+    390.1986
+  ],
+  "int_us": 10000,
+  "n_avg": 1,
+  "timestamp": "2026-06-09T10:52:42",
+  "type": "espectro",
+  "dark_subtracted": false,
+  "n_points": 2048,
+  "csv_file": "espectro_20260609_105242_chA_HR+C1911_10000us.csv"
+}

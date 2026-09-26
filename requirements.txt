@@ -1,0 +1,41 @@
+# microLIBS — dependencias del NÚCLEO
+#
+#   pip install -r requirements.txt
+#
+# Esto alcanza para: modo simulado, la suite de tests, desarrollo y revisión
+# de código. NO incluye ningún paquete atado a un instrumento físico.
+#
+# Los drivers de hardware van en archivos aparte, uno por instrumento (abajo).
+# Instalá solo los de los instrumentos que tengas conectados en esa PC.
+#
+# ── Por qué está separado ──────────────────────────────────────────────────
+# Cuando un paquete de un requirements falla, pip aborta el comando COMPLETO
+# y no instala nada. Antes, `pyflycap2` (driver de la cámara FLIR) estaba acá
+# como dependencia obligatoria: en cualquier Python sin wheel precompilado
+# intenta compilarse desde fuente, falla, y se lleva puesta la instalación
+# entera — ni numpy quedaba instalado. Por eso el repo no arrancaba al
+# clonarlo en otra PC.
+#
+# ── Versiones probadas ─────────────────────────────────────────────────────
+# Sin pines a propósito: se verificó que el núcleo funciona en los dos
+# extremos del rango (22-Sep-2026, 71 passed / 1 skipped en ambos).
+#
+#   Python 3.9.12  ->  numpy 1.26.3 · opencv 4.10.0 · Pillow 10.2.0 · matplotlib 3.9.4
+#   Python 3.12.6  ->  numpy 2.5.3  · opencv 5.0.0  · Pillow 12.3.0 · matplotlib 3.11.2
+#
+# Python 3.9 está fuera de soporte desde octubre de 2025. Para instalaciones
+# nuevas, usar 3.12.
+
+PyYAML
+numpy
+matplotlib
+Pillow
+opencv-python
+
+# ── Extras por instrumento (instalar aparte, según la PC) ──────────────────
+#
+#   requirements-ocean.txt       espectrómetro Ocean HR2000+
+#   requirements-thorlabs.txt    platina Thorlabs Kinesis
+#   requirements-windows.txt     enumeración de cámaras USB y puerto serie
+#   requirements-chameleon.txt   cámara FLIR Chameleon   <- LEER SUS NOTAS
+#   requirements-dev.txt         para correr los tests

@@ -1,0 +1,13 @@
+# microLIBS — platina Thorlabs (Kinesis BSC10x/BSC20x/BSC103)
+#
+#   pip install -r requirements-thorlabs.txt
+#
+# Verificado el 22-Sep-2026: instala OK en Python 3.9 y en 3.12.
+#
+# ── Además de este paquete hace falta ──────────────────────────────────────
+# El Thorlabs Kinesis SDK y .NET Framework, instalados aparte (NO vienen por
+# pip). El driver busca el SDK en:
+#     C:\Program Files\Thorlabs\Kinesis
+#     C:\Program Files (x86)\Thorlabs\Kinesis
+
+pythonnet

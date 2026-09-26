@@ -1,0 +1,606 @@
+C:\Users\Cin\microlibs_v2-Cal_v5\tools>python probe_seabreeze_delay.py --device
+seabreeze version: 2.4.0
+
+================================================================
+ETAPA 1 - API del backend: cseabreeze
+================================================================
+
+  [SeaBreezeAcquisitionDelayFeature]
+    >>> get_delay_increment_microseconds
+    >>> get_delay_microseconds
+        get_feature_class_registry
+    >>> get_maximum_delay_microseconds
+    >>> get_minimum_delay_microseconds
+    >>> set_delay_microseconds
+
+  [SeaBreezeContinuousStrobeFeature]
+        get_feature_class_registry
+        set_enable
+        set_period_micros
+
+  [SeaBreezeDHCPServerFeature]
+        get_address
+        get_enable_state
+        get_feature_class_registry
+        set_address
+        set_enable_state
+
+  [SeaBreezeDataBufferFeature]
+        clear
+        get_buffer_capacity
+        get_buffer_capacity_maximum
+        get_buffer_capacity_minimum
+        get_feature_class_registry
+        get_number_of_elements
+        remove_oldest_spectra
+        set_buffer_capacity
+
+  [SeaBreezeDevice]
+        close
+        get_model
+        get_serial_number
+        open
+
+  [SeaBreezeEEPROMFeature]
+        eeprom_read_slot
+        get_feature_class_registry
+
+  [SeaBreezeEthernetConfigurationFeature]
+        get_feature_class_registry
+        get_gbe_enable_status
+        get_mac_address
+        set_gbe_enable_status
+        set_mac_address
+
+  [SeaBreezeFastBufferFeature]
+        get_buffering_enable
+        get_consecutive_sample_count
+        get_feature_class_registry
+        set_buffering_enable
+        set_consecutive_sample_count
+
+  [SeaBreezeFeature]
+        get_feature_class_registry
+
+  [SeaBreezeGPIOFeature]
+        get_egpio_available_modes
+        get_egpio_current_mode
+        get_egpio_output_vector_vector
+        get_egpio_value
+        get_feature_class_registry
+        get_gpio_output_enable_vector
+        get_gpio_value_vector
+        get_number_of_egpio_pins
+        get_number_of_gpio_pins
+        set_egpio_mode
+        set_egpio_output_vector
+        set_egpio_value
+        set_gpio_output_enable_vector
+        set_gpio_value_vector
+
+  [SeaBreezeI2CMasterFeature]
+        get_feature_class_registry
+        get_number_of_buses
+        read_bus
+        write_bus
+
+  [SeaBreezeIPv4Feature]
+        add_ipv4_address
+        delete_ipv4_address
+        get_default_gateway
+        get_dhcp_enable_state
+        get_feature_class_registry
+        get_ipv4_address
+        get_number_of_ipv4_addresses
+        set_default_gateway
+        set_dhcp_enable_state
+
+  [SeaBreezeIntrospectionFeature]
+        get_active_pixel_ranges
+        get_electric_dark_pixel_ranges
+        get_feature_class_registry
+        get_optical_dark_pixel_ranges
+        number_of_pixels
+
+  [SeaBreezeIrradCalFeature]
+        get_feature_class_registry
+        has_collection_area
+        read_calibration
+        read_collection_area
+        write_calibration
+        write_collection_area
+
+  [SeaBreezeLightSourceFeature]
+        get_count
+        get_feature_class_registry
+        get_intensity
+        has_enable
+        has_variable_intensity
+        is_enabled
+        set_enable
+        set_intensity
+
+  [SeaBreezeMulticastFeature]
+        get_feature_class_registry
+        get_multicast_enable_state
+        set_multicast_enable_state
+
+  [SeaBreezeNetworkConfigurationFeature]
+        get_feature_class_registry
+        get_network_interface_connection_type
+        get_network_interface_enable_state
+        get_number_of_network_interfaces
+        run_network_interface_self_test
+        save_network_interface_connection_settings
+        set_network_interface_enable_state
+
+  [SeaBreezeNonlinearityCoefficientsFeature]
+        get_feature_class_registry
+        get_nonlinearity_coefficients
+
+  [SeaBreezeNumFeaturesError]
+        with_traceback
+
+  [SeaBreezeOpticalBenchFeature]
+        get_coating
+        get_feature_class_registry
+        get_fiber_diameter_microns
+        get_filter
+        get_grating
+        get_id
+        get_serial_number
+        get_slit_width_microns
+
+  [SeaBreezePixelBinningFeature]
+        get_binning_factor
+        get_default_binning_factor
+        get_feature_class_registry
+        get_max_binning_factor
+        set_binning_factor
+        set_default_binning_factor
+
+  [SeaBreezeRawUSBBusAccessFeature]
+        get_feature_class_registry
+        raw_usb_read
+        raw_usb_write
+
+  [SeaBreezeRevisionFeature]
+        get_feature_class_registry
+        hardware_revision
+        revision_firmware_get
+
+  [SeaBreezeShutterFeature]
+        get_feature_class_registry
+        set_shutter_open
+
+  [SeaBreezeSpectrometerFeature]
+        get_electric_dark_pixel_indices
+        get_fast_buffer_spectrum
+        get_feature_class_registry
+        get_integration_time_micros_limits
+        get_intensities
+        get_maximum_intensity
+        get_wavelengths
+        set_integration_time_micros
+    >>> set_trigger_mode
+
+  [SeaBreezeSpectrumProcessingFeature]
+        get_boxcar_width
+        get_feature_class_registry
+        get_scans_to_average
+        set_boxcar_width
+        set_scans_to_average
+
+  [SeaBreezeStrayLightCoefficientsFeature]
+        get_feature_class_registry
+        get_stray_light_coefficients
+
+  [SeaBreezeStrobeLampFeature]
+    >>> enable_lamp
+        get_feature_class_registry
+
+  [SeaBreezeTemperatureFeature]
+        count_temperatures
+        get_feature_class_registry
+        read_temperature
+        temperature_get_all
+
+  [SeaBreezeThermoElectricFeature]
+        enable_tec
+        get_feature_class_registry
+        read_temperature_degrees_celsius
+        set_temperature_setpoint_degrees_celsius
+
+  [SeaBreezeWifiConfigurationFeature]
+        get_feature_class_registry
+        get_wifi_mode
+        get_wifi_security_type
+        get_wifi_ssid
+        set_wifi_mode
+        set_wifi_pass_phrase
+        set_wifi_security_type
+        set_wifi_ssid
+
+  --> cseabreeze expone metodos de delay/trigger/strobe?  SI (ver lineas >>>)
+
+================================================================
+ETAPA 1 - API del backend: pyseabreeze
+================================================================
+
+  [SeaBreezeAcquisitionDelayFeature]
+    >>> get_delay_increment_microseconds
+    >>> get_delay_microseconds
+        get_feature_class_registry
+    >>> get_maximum_delay_microseconds
+    >>> get_minimum_delay_microseconds
+    >>> set_delay_microseconds
+        specialize
+        supports_protocol
+
+  [SeaBreezeContinuousStrobeFeature]
+        get_feature_class_registry
+        set_enable
+        set_period_micros
+        specialize
+        supports_protocol
+
+  [SeaBreezeDHCPServerFeature]
+        get_address
+        get_enable_state
+        get_feature_class_registry
+        set_address
+        set_enable_state
+        specialize
+        supports_protocol
+
+  [SeaBreezeDataBufferFeature]
+        clear
+        get_buffer_capacity
+        get_buffer_capacity_maximum
+        get_buffer_capacity_minimum
+        get_feature_class_registry
+        get_number_of_elements
+        remove_oldest_spectra
+        set_buffer_capacity
+        specialize
+        supports_protocol
+
+  [SeaBreezeDevice]
+        close
+        get_serial_number
+        open
+
+  [SeaBreezeEEPROMFeature]
+        eeprom_read_slot
+        get_feature_class_registry
+        specialize
+        supports_protocol
+
+  [SeaBreezeEthernetConfigurationFeature]
+        get_feature_class_registry
+        get_gbe_enable_status
+        get_mac_address
+        set_gbe_enable_status
+        set_mac_address
+        specialize
+        supports_protocol
+
+  [SeaBreezeFastBufferFeature]
+        get_buffering_enable
+        get_consecutive_sample_count
+        get_feature_class_registry
+        set_buffering_enable
+        set_consecutive_sample_count
+        specialize
+        supports_protocol
+
+  [SeaBreezeFeature]
+        get_feature_class_registry
+        specialize
+        supports_protocol
+
+  [SeaBreezeGPIOFeature]
+        get_egpio_available_modes
+        get_egpio_current_mode
+        get_egpio_output_vector_vector
+        get_egpio_value
+        get_feature_class_registry
+        get_gpio_output_enable_vector
+        get_gpio_value_vector
+        get_number_of_egpio_pins
+        get_number_of_gpio_pins
+        set_egpio_mode
+        set_egpio_output_vector
+        set_egpio_value
+        set_gpio_output_enable_vector
+        set_gpio_value_vector
+        specialize
+        supports_protocol
+
+  [SeaBreezeI2CMasterFeature]
+        get_feature_class_registry
+        get_number_of_buses
+        read_bus
+        specialize
+        supports_protocol
+        write_bus
+
+  [SeaBreezeIPv4Feature]
+        add_ipv4_address
+        delete_ipv4_address
+        get_default_gateway
+        get_dhcp_enable_state
+        get_feature_class_registry
+        get_ipv4_address
+        get_number_of_ipv4_addresses
+        set_default_gateway
+        set_dhcp_enable_state
+        specialize
+        supports_protocol
+
+  [SeaBreezeIntrospectionFeature]
+        get_active_pixel_ranges
+        get_electric_dark_pixel_ranges
+        get_feature_class_registry
+        get_optical_dark_pixel_ranges
+        number_of_pixels
+        specialize
+        supports_protocol
+
+  [SeaBreezeIrradCalFeature]
+        get_feature_class_registry
+        has_collection_area
+        read_calibration
+        read_collection_area
+        specialize
+        supports_protocol
+        write_calibration
+        write_collection_area
+
+  [SeaBreezeLightSourceFeature]
+        get_count
+        get_feature_class_registry
+        get_intensity
+        has_enable
+        has_variable_intensity
+        is_enabled
+        set_enable
+        set_intensity
+        specialize
+        supports_protocol
+
+  [SeaBreezeMulticastFeature]
+        get_feature_class_registry
+        get_multicast_enable_state
+        set_multicast_enable_state
+        specialize
+        supports_protocol
+
+  [SeaBreezeNetworkConfigurationFeature]
+        get_feature_class_registry
+        get_network_interface_connection_type
+        get_network_interface_enable_state
+        get_number_of_network_interfaces
+        run_network_interface_self_test
+        save_network_interface_connection_settings
+        set_network_interface_enable_state
+        specialize
+        supports_protocol
+
+  [SeaBreezeNonlinearityCoefficientsFeature]
+        get_feature_class_registry
+        get_nonlinearity_coefficients
+        specialize
+        supports_protocol
+
+  [SeaBreezeNumFeaturesError]
+        with_traceback
+
+  [SeaBreezeOpticalBenchFeature]
+        get_coating
+        get_feature_class_registry
+        get_fiber_diameter_microns
+        get_filter
+        get_grating
+        get_id
+        get_serial_number
+        get_slit_width_microns
+        specialize
+        supports_protocol
+
+  [SeaBreezePixelBinningFeature]
+        get_binning_factor
+        get_default_binning_factor
+        get_feature_class_registry
+        get_max_binning_factor
+        set_binning_factor
+        set_default_binning_factor
+        specialize
+        supports_protocol
+
+  [SeaBreezeRawUSBBusAccessFeature]
+        get_feature_class_registry
+        raw_usb_read
+        raw_usb_write
+        specialize
+        supports_protocol
+
+  [SeaBreezeRevisionFeature]
+        get_feature_class_registry
+        hardware_revision
+        revision_firmware_get
+        specialize
+        supports_protocol
+
+  [SeaBreezeShutterFeature]
+        get_feature_class_registry
+        set_shutter_open
+        specialize
+        supports_protocol
+
+  [SeaBreezeSpectrometerFeature]
+        get_electric_dark_pixel_indices
+        get_fast_buffer_spectrum
+        get_feature_class_registry
+        get_integration_time_micros_limits
+        get_intensities
+        get_maximum_intensity
+        get_wavelengths
+        set_integration_time_micros
+    >>> set_trigger_mode
+        specialize
+        supports_protocol
+
+  [SeaBreezeSpectrumProcessingFeature]
+        get_boxcar_width
+        get_feature_class_registry
+        get_scans_to_average
+        set_boxcar_width
+        set_scans_to_average
+        specialize
+        supports_protocol
+
+  [SeaBreezeStrayLightCoefficientsFeature]
+        get_feature_class_registry
+        get_stray_light_coefficients
+        specialize
+        supports_protocol
+
+  [SeaBreezeStrobeLampFeature]
+    >>> enable_lamp
+        get_feature_class_registry
+        specialize
+        supports_protocol
+
+  [SeaBreezeTemperatureFeature]
+        count_temperatures
+        get_feature_class_registry
+        read_temperature
+        specialize
+        supports_protocol
+        temperature_get_all
+
+  [SeaBreezeThermoElectricFeature]
+        enable_tec
+        get_feature_class_registry
+        read_temperature_degrees_celsius
+        set_temperature_setpoint_degrees_celsius
+        specialize
+        supports_protocol
+
+  [SeaBreezeWifiConfigurationFeature]
+        get_feature_class_registry
+        get_wifi_mode
+        get_wifi_security_type
+        get_wifi_ssid
+        set_wifi_mode
+        set_wifi_pass_phrase
+        set_wifi_security_type
+        set_wifi_ssid
+        specialize
+        supports_protocol
+
+  --> pyseabreeze expone metodos de delay/trigger/strobe?  SI (ver lineas >>>)
+
+================================================================
+ETAPA 2 - Equipo real bajo cseabreeze
+================================================================
+
+  Dispositivo: <SeaBreezeDevice HR2000PLUS:HR+C1914>
+    model  : HR2000PLUS
+    serial : HR+C1914
+    features disponibles:
+          raw_usb_bus_access  (n=1)
+          spectrometer  (n=1)
+          pixel_binning  (n=0)
+          thermo_electric  (n=0)
+          irrad_cal  (n=1)
+          ethernet_configuration  (n=0)
+          multicast  (n=0)
+          ipv4  (n=0)
+          dhcp_server  (n=0)
+          network_configuration  (n=0)
+          wifi_configuration  (n=0)
+          gpio  (n=0)
+          eeprom  (n=1)
+          light_source  (n=0)
+      >>> strobe_lamp  (n=1)
+      >>> continuous_strobe  (n=1)
+          shutter  (n=0)
+          nonlinearity_coefficients  (n=1)
+          temperature  (n=0)
+          introspection  (n=0)
+          spectrum_processing  (n=0)
+          revision  (n=0)
+          optical_bench  (n=0)
+          stray_light_coefficients  (n=1)
+          data_buffer  (n=0)
+          fast_buffer  (n=0)
+      >>> acquisition_delay  (n=0)
+          i2c_master  (n=0)
+
+  Dispositivo: <SeaBreezeDevice HR2000PLUS:HR+C1915>
+    model  : HR2000PLUS
+    serial : HR+C1915
+    features disponibles:
+          raw_usb_bus_access  (n=1)
+          spectrometer  (n=1)
+          pixel_binning  (n=0)
+          thermo_electric  (n=0)
+          irrad_cal  (n=1)
+          ethernet_configuration  (n=0)
+          multicast  (n=0)
+          ipv4  (n=0)
+          dhcp_server  (n=0)
+          network_configuration  (n=0)
+          wifi_configuration  (n=0)
+          gpio  (n=0)
+          eeprom  (n=1)
+          light_source  (n=0)
+      >>> strobe_lamp  (n=1)
+      >>> continuous_strobe  (n=1)
+          shutter  (n=0)
+          nonlinearity_coefficients  (n=1)
+          temperature  (n=0)
+          introspection  (n=0)
+          spectrum_processing  (n=0)
+          revision  (n=0)
+          optical_bench  (n=0)
+          stray_light_coefficients  (n=1)
+          data_buffer  (n=0)
+          fast_buffer  (n=0)
+      >>> acquisition_delay  (n=0)
+          i2c_master  (n=0)
+
+  Dispositivo: <SeaBreezeDevice HR2000PLUS:HR+C1911>
+    model  : HR2000PLUS
+    serial : HR+C1911
+    features disponibles:
+          raw_usb_bus_access  (n=1)
+          spectrometer  (n=1)
+          pixel_binning  (n=0)
+          thermo_electric  (n=0)
+          irrad_cal  (n=1)
+          ethernet_configuration  (n=0)
+          multicast  (n=0)
+          ipv4  (n=0)
+          dhcp_server  (n=0)
+          network_configuration  (n=0)
+          wifi_configuration  (n=0)
+          gpio  (n=0)
+          eeprom  (n=1)
+          light_source  (n=0)
+      >>> strobe_lamp  (n=1)
+      >>> continuous_strobe  (n=1)
+          shutter  (n=0)
+          nonlinearity_coefficients  (n=1)
+          temperature  (n=0)
+          introspection  (n=0)
+          spectrum_processing  (n=0)
+          revision  (n=0)
+          optical_bench  (n=0)
+          stray_light_coefficients  (n=1)
+          data_buffer  (n=0)
+          fast_buffer  (n=0)
+      >>> acquisition_delay  (n=0)
+          i2c_master  (n=0)
