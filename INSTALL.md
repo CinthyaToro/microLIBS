@@ -18,7 +18,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m pytest tests/ -q
 ```
 
-Resultado esperado: **`71 passed, 1 skipped`**.
+Resultado esperado: **`101 passed, 1 skipped`**.
 
 Si eso pasa, la instalación está bien. El `skipped` es a propósito: es el
 golden run de v2.1, jubilado — el test explica el motivo si lo mirás.
@@ -27,7 +27,7 @@ golden run de v2.1, jubilado — el test explica el motivo si lo mirás.
 
 | Versión | Estado |
 |---|---|
-| **3.12** | recomendada. Verificado: 71 passed |
+| **3.12** | recomendada. Verificado: 101 passed |
 | 3.9 | funciona, pero **sin soporte desde octubre de 2025** |
 
 En Windows, ojo con cuál lanzás: `python` y `py` pueden apuntar a

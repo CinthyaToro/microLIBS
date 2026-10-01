@@ -9,7 +9,7 @@ micrografías, dispara un láser y adquiere el espectro del plasma punto a punto
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt -r requirements-dev.txt
-python -m pytest tests/ -q      # esperado: 71 passed, 1 skipped
+python -m pytest tests/ -q      # esperado: 101 passed, 1 skipped
 ```
 
 Eso alcanza para el modo simulado y los tests, sin ningún instrumento
