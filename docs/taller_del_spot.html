@@ -1,0 +1,1640 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Taller del spot</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --ground:#F5F7F8; --surface:#FFFFFF; --surface-2:#EBEFF1; --surface-3:#DFE5E8;
+    --ink:#15191C; --ink-2:#3F4950; --ink-3:#6B767E;
+    --line:#D9E0E4; --line-2:#BFC9CF;
+    --beam:#B4530A; --beam-soft:#B4530A22;
+    --data:#0E6E72;
+    --ok:#12795B; --warn:#9A6205; --bad:#B03030;
+    --r:10px;
+    --f-serif:"IBM Plex Serif",Georgia,serif;
+    --f-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --ground:#0F1215; --surface:#181C21; --surface-2:#20262C; --surface-3:#2A323A;
+      --ink:#E9EDF0; --ink-2:#AEB8C0; --ink-3:#7C868E;
+      --line:#272E35; --line-2:#353E46;
+      --beam:#E8963F; --beam-soft:#E8963F26;
+      --data:#4FB3B8;
+      --ok:#4FC79E; --warn:#E0A548; --bad:#E07070;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --ground:#0F1215; --surface:#181C21; --surface-2:#20262C; --surface-3:#2A323A;
+    --ink:#E9EDF0; --ink-2:#AEB8C0; --ink-3:#7C868E;
+    --line:#272E35; --line-2:#353E46;
+    --beam:#E8963F; --beam-soft:#E8963F26;
+    --data:#4FB3B8;
+    --ok:#4FC79E; --warn:#E0A548; --bad:#E07070;
+  }
+  *{box-sizing:border-box}
+  html{height:100%}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:var(--f-sans); font-size:15px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%}
+  [hidden]{display:none!important}
+  .wrap{max-width:1000px; margin:0 auto; padding-inline:16px; padding-block:0 64px}
+
+  header{padding-block:38px 24px; border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ink-3); margin:0 0 10px}
+  h1{font-family:var(--f-sans); font-weight:700; font-size:clamp(28px,5.2vw,40px);
+    line-height:1.1; letter-spacing:-.02em; margin:0 0 12px; text-wrap:balance}
+  .lede{font-size:17px; color:var(--ink-2); margin:0; max-width:64ch}
+
+  section{margin-top:40px}
+  h2{font-family:var(--f-serif); font-size:23px; font-weight:600; margin:0 0 4px;
+    letter-spacing:-.005em}
+  .sub{color:var(--ink-2); margin:0 0 18px; max-width:66ch}
+  h3{font-size:15px; font-weight:600; margin:22px 0 8px; letter-spacing:.01em}
+  p{margin:0 0 12px}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:20px}
+  code{font-family:var(--f-mono); font-size:.9em; background:var(--surface-2);
+    padding:1px 5px; border-radius:4px}
+
+  /* ── calculadora ── */
+  .calc{display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:18px}
+  @media (max-width:760px){ .calc{grid-template-columns:1fr} }
+  .inputs{display:grid; gap:12px; align-content:start}
+  .fld{display:grid; gap:4px}
+  .fld label{font-size:12.5px; color:var(--ink-2); font-weight:500}
+  .fld .hint{font-size:11.5px; color:var(--ink-3); font-family:var(--f-mono)}
+  .fld input{
+    font:500 15px var(--f-mono); font-variant-numeric:tabular-nums;
+    background:var(--surface); color:var(--ink);
+    border:1px solid var(--line-2); border-radius:7px; padding:8px 10px; width:100%;
+  }
+  .fld input:focus-visible{outline:2px solid var(--beam); outline-offset:1px; border-color:var(--beam)}
+  .presets{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:4px}
+  .presets button{
+    font:500 12px var(--f-sans); cursor:pointer;
+    background:var(--surface-2); color:var(--ink-2);
+    border:1px solid var(--line-2); border-radius:999px; padding:5px 11px;
+  }
+  .presets button:hover{border-color:var(--beam); color:var(--beam)}
+  .presets button:focus-visible{outline:2px solid var(--beam); outline-offset:2px}
+
+  .outs{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;
+    align-content:start}
+  .out{background:var(--surface-2); border-radius:8px; padding:12px 14px}
+  .out .k{font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-3); display:block; font-weight:600}
+  .out .v{font-family:var(--f-mono); font-weight:600; font-size:23px;
+    font-variant-numeric:tabular-nums; display:block; line-height:1.2; margin-top:3px}
+  .out .u{font-size:12px; color:var(--ink-3); font-weight:400}
+  .out.hero{grid-column:1/-1; background:var(--beam-soft); border:1px solid var(--beam)}
+  .out.hero .v{font-size:34px; color:var(--beam)}
+  .out .note{font-size:11.5px; color:var(--ink-3); display:block; margin-top:4px}
+
+  .bench{margin-top:16px; background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); padding:16px; overflow-x:auto}
+  .bench svg{display:block; min-width:520px; width:100%; height:auto}
+  .vlabel{font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-3); margin:0 0 10px}
+  .cap{font-size:12.5px; color:var(--ink-3); margin:10px 0 0}
+
+  table{border-collapse:collapse; width:100%; font-size:14px}
+  .tw{overflow-x:auto}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line)}
+  th{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3)}
+  td.n{font-family:var(--f-mono); font-variant-numeric:tabular-nums; text-align:right}
+  tbody tr:last-child td{border-bottom:0}
+
+  .callout{border-left:3px solid var(--beam); background:var(--beam-soft);
+    padding:14px 16px; border-radius:0 8px 8px 0; margin:16px 0}
+  .callout.data{border-color:var(--data); background:color-mix(in srgb,var(--data) 10%,transparent)}
+  .callout b{font-weight:600}
+  .callout p:last-child{margin-bottom:0}
+
+  ol,ul{margin:0 0 12px; padding-left:22px}
+  li{margin-bottom:7px}
+  li:last-child{margin-bottom:0}
+
+  /* ── pasos del manual ── */
+  .step{display:grid; grid-template-columns:32px 1fr; gap:14px; margin-bottom:18px}
+  .step .num{
+    width:28px; height:28px; border-radius:50%; background:var(--data); color:#fff;
+    display:grid; place-items:center; font:600 13px var(--f-mono); flex:none;
+  }
+  .step h4{margin:2px 0 6px; font-size:15px; font-weight:600}
+  .step p{margin:0 0 6px; color:var(--ink-2); font-size:14.5px}
+  .step p:last-child{margin-bottom:0}
+
+  /* ── ishikawa ── */
+  .bone{background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); margin-bottom:10px; overflow:hidden}
+  .bone > summary{
+    cursor:pointer; padding:14px 18px; font-weight:600; font-size:15.5px;
+    display:flex; align-items:center; gap:10px; list-style:none;
+  }
+  .bone > summary::-webkit-details-marker{display:none}
+  .bone > summary::after{content:"+"; margin-left:auto; color:var(--ink-3);
+    font-family:var(--f-mono); font-size:18px}
+  .bone[open] > summary::after{content:"−"}
+  .bone > summary:hover{background:var(--surface-2)}
+  .bone .body{padding:0 18px 16px; border-top:1px solid var(--line)}
+  .cause{display:grid; grid-template-columns:1fr minmax(120px,190px); gap:10px;
+    align-items:center; padding:9px 0; border-bottom:1px solid var(--line)}
+  .cause:last-child{border-bottom:0}
+  .cause .q{font-size:14px}
+  .cause .q .tag{font-family:var(--f-mono); font-size:10px; font-weight:600;
+    padding:2px 6px; border-radius:4px; margin-right:7px; white-space:nowrap}
+  .tag.hot{background:color-mix(in srgb,var(--bad) 16%,transparent); color:var(--bad)}
+  .tag.ask{background:var(--surface-3); color:var(--ink-2)}
+  .cause input{
+    font:400 13px var(--f-mono); background:var(--surface-2); color:var(--ink);
+    border:1px solid var(--line-2); border-radius:6px; padding:6px 9px; width:100%;
+  }
+  .cause input:focus-visible{outline:2px solid var(--data); outline-offset:1px}
+  @media (max-width:620px){ .cause{grid-template-columns:1fr; gap:5px} }
+
+  .tag.obj{background:color-mix(in srgb,var(--data) 15%,transparent); color:var(--data);
+    font-family:var(--f-mono); font-size:10px; font-weight:600; padding:3px 8px;
+    border-radius:4px; white-space:nowrap}
+  .risk{font-size:13.5px; color:var(--ink-2); background:var(--surface-2);
+    border-radius:8px; padding:11px 13px; margin:12px 0 4px}
+  .risk b{color:var(--data)}
+  .cause3{display:grid; grid-template-columns:1fr minmax(120px,210px); gap:10px;
+    align-items:start; padding:10px 0; border-bottom:1px solid var(--line)}
+  .cause3:last-of-type{border-bottom:0}
+  .cause3 .q{font-size:14px; line-height:1.45}
+  .cause3 .q .tag{font-family:var(--f-mono); font-size:10px; font-weight:600;
+    padding:2px 6px; border-radius:4px; margin-right:7px; white-space:nowrap}
+  .cause3 .cm{display:block; font-size:12.5px; color:var(--ink-3); margin-top:2px}
+  .cause3 input{font:400 13px var(--f-mono); background:var(--surface-2); color:var(--ink);
+    border:1px solid var(--line-2); border-radius:6px; padding:6px 9px; width:100%}
+  .cause3 input:focus-visible{outline:2px solid var(--data); outline-offset:1px}
+  .kpi-row{display:grid; grid-template-columns:1fr minmax(150px,220px); gap:12px;
+    align-items:start; margin-top:14px; padding:12px 13px; border-radius:8px;
+    background:color-mix(in srgb,var(--data) 8%,transparent);
+    border-left:3px solid var(--data)}
+  .kpi-lbl{display:block; font-size:10px; font-weight:600; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--data); margin-bottom:3px}
+  .kpi-txt b{font-size:14px; display:block}
+  .kpi-why{display:block; font-size:12.5px; color:var(--ink-3); margin-top:3px}
+  .kpi-vals{display:grid; grid-template-columns:1fr 1fr; gap:6px}
+  .kpi-vals input{font:400 13px var(--f-mono); background:var(--surface); color:var(--ink);
+    border:1px solid var(--line-2); border-radius:6px; padding:6px 8px; width:100%;
+    text-align:center}
+  .kpi-vals input:focus-visible{outline:2px solid var(--data); outline-offset:1px}
+  @media (max-width:620px){ .kpi-row{grid-template-columns:1fr} }
+  .smart{margin-top:14px; padding-top:13px; border-top:2px solid var(--data); display:grid; gap:5px}
+  .smart label{font-size:11px; font-weight:600; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--data)}
+  .smart input{font:400 13.5px var(--f-mono); background:var(--surface-2); color:var(--ink);
+    border:1px solid var(--line-2); border-radius:6px; padding:8px 10px; width:100%}
+  .smart input:focus-visible{outline:2px solid var(--data); outline-offset:1px}
+  @media (max-width:620px){ .cause3{grid-template-columns:1fr; gap:5px} }
+
+  /* ── pescado ── */
+  .legend .lg{display:inline-flex; align-items:center; gap:6px; font-size:12.5px}
+  .legend .lg i{width:10px; height:10px; border-radius:50%; display:inline-block}
+  .legend .lg-hint{font-size:12.5px; color:var(--ink-3); font-style:italic}
+  .fishwrap{background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); padding:10px; margin-top:14px; overflow-x:auto}
+  .fishwrap svg{display:block; min-width:820px; width:100%; height:auto}
+  .fishwrap .cz:hover text{fill:var(--ink); font-weight:600}
+  .fishwrap .cz:hover circle{r:6}
+  .fishwrap .bz:hover rect{stroke:var(--beam); stroke-width:2.5}
+  .fishwrap .hz:hover rect{opacity:0.24}
+
+  .panel{background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); padding:20px; margin-top:12px; min-height:120px}
+  .panel-empty{color:var(--ink-3); font-style:italic; margin:0; text-align:center; padding:22px 0}
+  .ptitle{border-bottom:1px solid var(--line); padding-bottom:12px; margin-bottom:14px;
+    position:relative}
+  .pkind{font-family:var(--f-mono); font-size:10.5px; font-weight:600; letter-spacing:.1em;
+    color:var(--ink-3); display:block; margin-bottom:4px}
+  .ptitle h3{margin:0; font-size:19px; font-family:var(--f-serif); font-weight:600}
+  .pcount{position:absolute; right:0; top:14px; display:flex; align-items:center; gap:4px;
+    font-family:var(--f-mono); font-size:12.5px; color:var(--ink-2)}
+  .pcount i{width:9px; height:9px; border-radius:50%; display:inline-block; margin-left:8px}
+  .panel p{font-size:14.5px; color:var(--ink-2)}
+  .panel p b{color:var(--ink)}
+  .pbox{background:var(--surface-2); border-radius:8px; padding:13px 15px; margin:12px 0}
+  .pbox.kpi{background:color-mix(in srgb,var(--data) 9%,transparent);
+    border-left:3px solid var(--data)}
+  .plbl{font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-3); display:block}
+  .pbox.kpi .plbl{color:var(--data)}
+  .pbox ul{margin:0; padding-left:20px; font-size:13.5px; color:var(--ink-2)}
+  .pbox li{margin-bottom:4px}
+  .pgrid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  @media (max-width:640px){ .pgrid2{grid-template-columns:1fr} }
+  .pin{font:400 13.5px var(--f-mono); background:var(--surface); color:var(--ink);
+    border:1px solid var(--line-2); border-radius:6px; padding:7px 10px; width:100%;
+    margin-top:5px}
+  .pin:focus-visible{outline:2px solid var(--data); outline-offset:1px}
+  .pfull{display:block; font-size:10.5px; font-weight:600; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--data); margin-top:14px; padding-top:13px;
+    border-top:2px solid var(--data)}
+  .pgrid2 label{font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-3)}
+  .pstates{display:flex; flex-wrap:wrap; gap:7px; margin-top:8px}
+  .pst{display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+    font:500 13px var(--f-sans); padding:7px 13px; border-radius:999px;
+    border:1.5px solid var(--line-2); background:var(--surface); color:var(--ink-2)}
+  .pst i{width:10px; height:10px; border-radius:50%; display:inline-block}
+  .pst.on{border-color:var(--ink-2); color:var(--ink); font-weight:600;
+    background:var(--surface-3)}
+  .pst:focus-visible{outline:2px solid var(--data); outline-offset:2px}
+  .pfoot{font-size:13px; color:var(--ink-3); margin:14px 0 0}
+  .plink{color:var(--data)}
+
+  .toolbar{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; align-items:center}
+  .toolbar button{
+    font:600 13px var(--f-sans); cursor:pointer; padding:9px 16px; border-radius:8px;
+    border:1px solid var(--line-2); background:var(--surface); color:var(--ink);
+  }
+  .toolbar button.primary{background:var(--data); border-color:var(--data); color:#fff}
+  .toolbar button:focus-visible{outline:2px solid var(--data); outline-offset:2px}
+  .toolbar .msg{font-size:12.5px; color:var(--ink-3)}
+  #dump{
+    width:100%; min-height:150px; font:400 12px var(--f-mono); margin-top:12px;
+    background:var(--surface-2); color:var(--ink); border:1px solid var(--line-2);
+    border-radius:8px; padding:12px; resize:vertical;
+  }
+
+  .chk{display:grid; gap:0}
+  .chk label{display:grid; grid-template-columns:auto 1fr; gap:11px; align-items:start;
+    padding:11px 0; border-bottom:1px solid var(--line); cursor:pointer; font-size:14.5px}
+  .chk label:last-child{border-bottom:0}
+  .chk input{margin-top:4px; width:16px; height:16px; accent-color:var(--data)}
+  .chk .why{display:block; color:var(--ink-3); font-size:12.5px; margin-top:2px}
+
+  footer{margin-top:46px; padding-top:18px; border-top:1px solid var(--line);
+    font-size:12.5px; color:var(--ink-3)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">microLIBS · herramienta de laboratorio</p>
+  <h1>Taller del spot</h1>
+  <p class="lede">Hoy el spot mide <b>~200 µm</b>. El objetivo es <b>50 µm</b>.
+  Esta página calcula a cuánto se puede llegar con cada óptica, explica cómo medirlo,
+  y guarda lo que vayas anotando en el laboratorio.</p>
+</header>
+
+<!-- ═══════════ 1 · CALCULADORA ═══════════ -->
+<section>
+  <h2>1 · Qué spot se puede lograr</h2>
+  <p class="sub">Cambiá un valor y mirá cómo se mueve todo. Las <b>focales son reales</b>,
+  tomadas de las lentes que están en la mesa. Lo que todavía es estimación es el
+  <b>diámetro del haz</b> y el <b>M²</b>: reemplazalos apenas los midas.</p>
+
+  <div class="calc">
+    <div class="inputs">
+      <div class="presets">
+        <button type="button" data-p="hoy">LA1131 · f=50 (hoy)</button>
+        <button type="button" data-p="corta">LA1027 · f=35</button>
+        <button type="button" data-p="exp">LA1131 + expansor 4×</button>
+        <button type="button" data-p="obj">Objetivo · f=10</button>
+      </div>
+
+      <div class="fld">
+        <label for="f">Distancia focal de la lente</label>
+        <input id="f" type="number" value="50" min="1" step="1">
+        <span class="hint">mm — cuanto más corta, más chico el spot. Hoy: LA1131, f=50</span>
+      </div>
+      <div class="fld">
+        <label for="D">Diámetro del haz al entrar a la lente</label>
+        <input id="D" type="number" value="6" min="0.1" step="0.5">
+        <span class="hint">mm — cuanto más ancho entra, más chico sale</span>
+      </div>
+      <div class="fld">
+        <label for="lensD">Diámetro de la lente</label>
+        <input id="lensD" type="number" value="25.4" min="1" step="0.5">
+        <span class="hint">mm — una pulgada es lo habitual</span>
+      </div>
+      <div class="fld">
+        <label for="M2">Calidad del haz M²</label>
+        <input id="M2" type="number" value="10" min="1" step="0.5">
+        <span class="hint">1 = perfecto. Un flashlamp suele estar entre 5 y 20</span>
+      </div>
+      <div class="fld">
+        <label for="lam">Longitud de onda λ</label>
+        <input id="lam" type="number" value="1064" min="100" step="1">
+        <span class="hint">nm</span>
+      </div>
+      <div class="fld">
+        <label for="E">Energía del pulso</label>
+        <input id="E" type="number" value="1" min="0.001" step="0.1">
+        <span class="hint">mJ — la que entrega el láser al llegar a la muestra</span>
+      </div>
+      <div class="fld">
+        <label for="tau">Duración del pulso</label>
+        <input id="tau" type="number" value="6" min="0.1" step="0.5">
+        <span class="hint">ns</span>
+      </div>
+
+      <p style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+        color:var(--ink-3);margin:8px 0 0">La muestra</p>
+      <div class="fld">
+        <label for="esp">Espesor de la pastilla</label>
+        <input id="esp" type="number" value="2" min="0.1" step="0.1">
+        <span class="hint">mm — sirve de regla en el diagrama</span>
+      </div>
+      <div class="fld">
+        <label for="diam">Diámetro de la pastilla</label>
+        <input id="diam" type="number" value="10" min="0.5" step="0.5">
+        <span class="hint">mm</span>
+      </div>
+      <div class="fld">
+        <label for="tilt">Inclinación del montaje</label>
+        <input id="tilt" type="number" value="1" min="0" step="0.25">
+        <span class="hint">grados — cuánto se desnivela la pastilla</span>
+      </div>
+    </div>
+
+    <div class="outs" id="outs"></div>
+  </div>
+
+  <div class="bench">
+    <p class="vlabel">Vista real — lente, haz y pastilla a la misma escala</p>
+    <svg id="macro" viewBox="0 0 900 250" role="img"
+         aria-label="La lente, el haz que la atraviesa y la pastilla inclinada, todo a escala real"></svg>
+    <p class="cap" id="macrocap"></p>
+  </div>
+
+  <div class="bench">
+    <p class="vlabel">Zoom en la cintura — acá el spot mide micrones</p>
+    <svg id="bench" viewBox="0 0 900 400" role="img"
+         aria-label="Detalle de la cintura del haz: la zona de foco comparada con el espesor de la pastilla"></svg>
+    <p class="cap" id="benchcap"></p>
+  </div>
+
+  <div class="callout" id="verdict"></div>
+</section>
+
+<!-- ═══════════ 2 · POR QUÉ LA LENTE ═══════════ -->
+<section>
+  <h2>2 · Por qué una lente gruesa sola no llega</h2>
+  <p class="sub">La calculadora da el <b>mejor caso teórico</b>. Una lente simple no lo alcanza,
+  y conviene saber por qué antes de gastar el día ajustando.</p>
+
+  <div class="card">
+    <h3>Las tres cosas que agrandan el spot</h3>
+    <ol>
+      <li><b>La difracción</b> — el límite físico. Es lo que calcula la fórmula: no se puede
+      bajar de ahí con ninguna óptica.</li>
+      <li><b>La calidad del haz (M²)</b> — un haz de flashlamp no es un punto perfecto, y eso
+      multiplica el spot directamente. Un M² de 10 da un spot <b>10 veces</b> mayor que el
+      límite de difracción.</li>
+      <li><b>La aberración esférica</b> — y acá está el problema de la lente gruesa simple.
+      Los rayos que pasan por el borde enfocan en un punto distinto que los del centro.
+      No hay un foco: hay una zona borrosa. Cuanto más corta la focal y más ancho el haz,
+      peor. Justo donde queremos ir.</li>
+    </ol>
+
+    <div class="callout">
+      <p><b>Por eso un objetivo de microscopio gana.</b> No es "una lente mejor": son varias
+      lentes calculadas para que las aberraciones de unas cancelen las de otras. Por eso con
+      un objetivo se llega a spots de <b>decenas de micrones</b> donde una lente simple se
+      queda en cientos — con el mismo láser.</p>
+    </div>
+
+    <h3>¿Por qué un haz más ancho da un spot más chico?</h3>
+    <p>Es al revés de lo que dice la intuición, y conviene tenerlo claro antes de tocar nada.</p>
+    <p><b>Una lente no encoge el haz en proporción: lo hace converger.</b> Y lo que fija el
+    tamaño del foco es <b>cuán empinada</b> es esa convergencia.</p>
+
+    <div class="tw">
+    <svg viewBox="0 0 760 250" role="img" style="min-width:520px;width:100%;height:auto;display:block"
+         aria-label="Comparación: un haz angosto converge suave y da un foco grande; un haz ancho converge pronunciado y da un foco chico">
+      <rect x="0" y="0" width="760" height="250" fill="var(--surface)"/>
+
+      <!-- arriba: haz angosto -->
+      <text x="14" y="30" font-family="var(--f-sans)" font-size="13" font-weight="600"
+            fill="var(--ink-2)">Haz angosto → converge suave → foco grande</text>
+      <line x1="40" y1="70" x2="180" y2="70" stroke="var(--beam)" stroke-width="2"/>
+      <line x1="40" y1="90" x2="180" y2="90" stroke="var(--beam)" stroke-width="2"/>
+      <ellipse cx="185" cy="80" rx="7" ry="24" fill="var(--data)" opacity="0.28"
+               stroke="var(--data)" stroke-width="2"/>
+      <line x1="190" y1="70" x2="600" y2="74" stroke="var(--beam)" stroke-width="2"/>
+      <line x1="190" y1="90" x2="600" y2="86" stroke="var(--beam)" stroke-width="2"/>
+      <line x1="600" y1="66" x2="600" y2="94" stroke="var(--ink)" stroke-width="4"/>
+      <text x="618" y="84" font-family="var(--f-mono)" font-size="13" fill="var(--ink)">grande</text>
+
+      <!-- abajo: haz ancho -->
+      <text x="14" y="150" font-family="var(--f-sans)" font-size="13" font-weight="600"
+            fill="var(--ink-2)">Haz ancho → converge pronunciado → foco chico</text>
+      <line x1="40" y1="172" x2="180" y2="172" stroke="var(--beam)" stroke-width="2"/>
+      <line x1="40" y1="222" x2="180" y2="222" stroke="var(--beam)" stroke-width="2"/>
+      <ellipse cx="185" cy="197" rx="7" ry="38" fill="var(--data)" opacity="0.28"
+               stroke="var(--data)" stroke-width="2"/>
+      <line x1="190" y1="172" x2="600" y2="195" stroke="var(--beam)" stroke-width="2"/>
+      <line x1="190" y1="222" x2="600" y2="199" stroke="var(--beam)" stroke-width="2"/>
+      <line x1="600" y1="193" x2="600" y2="201" stroke="var(--ink)" stroke-width="4"/>
+      <text x="618" y="201" font-family="var(--f-mono)" font-size="13" fill="var(--ink)">chico</text>
+
+      <text x="600" y="240" text-anchor="middle" font-family="var(--f-sans)" font-size="12"
+            fill="var(--ink-3)">misma lente, misma focal</text>
+    </svg>
+    </div>
+
+    <p>Debajo de eso hay difracción: la lente iluminada funciona como una abertura, y
+    <b>cuanto más ancha es la abertura, menos difracta la luz</b>. Por eso el diámetro del haz
+    aparece <b>dividiendo</b> en la fórmula: si <code>D</code> se duplica, el spot sale con la
+    mitad del diámetro (de 68 pasa a 34 micrones).</p>
+
+    <div class="callout">
+      <p><b>Lo que manda es el f/# = focal ÷ diámetro del haz.</b> Acortar la focal a la cuarta
+      parte y ensanchar el haz cuatro veces <b>dan el mismo f/#</b>, y por eso dan el mismo
+      spot. Es la misma jugada por dos caminos.</p>
+      <p>Es lo mismo que en fotografía y astronomía: un teleobjetivo con lente frontal grande
+      resuelve <em>más</em> detalle que una camarita, no menos. Abertura grande, imagen fina.</p>
+    </div>
+
+    <p><b>Dos límites prácticos:</b> el haz tiene que <b>entrar</b> en la lente — si se expande
+    más que el diámetro útil se recorta, se pierde energía y aparecen anillos. Y con una lente
+    simple, ensanchar el haz <b>mejora la difracción pero empeora la aberración esférica</b>,
+    porque se usa más el borde. Con un objetivo eso no pasa: está corregido.</p>
+
+    <h3>Los dos caminos para llegar a 50 µm</h3>
+    <div class="tw">
+    <table>
+      <thead><tr><th>Camino</th><th>Qué cambia</th><th>A favor</th><th>En contra</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>Focal más corta</b></td>
+          <td>Lente o objetivo de menor <code>f</code></td>
+          <td>Directo: el spot baja en proporción a <code>f</code></td>
+          <td>Menos distancia de trabajo, y la aberración empeora si es lente simple</td>
+        </tr>
+        <tr>
+          <td><b>Expandir el haz</b></td>
+          <td>Un expansor antes de la lente actual</td>
+          <td>Se conserva la distancia de trabajo</td>
+          <td>Hay que llenar la apertura sin recortar el haz</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="cap">Los dos multiplican igual: bajar <code>f</code> a la cuarta parte o expandir
+    el haz 4× dan el mismo spot teórico. Probá los dos botones de arriba y comparalos.</p>
+
+    <h3>Todas las combinaciones, de una</h3>
+    <p>Cada lente que tenemos, contra cada expansor. Los números salen del
+    <b>M², λ y diámetro de haz que tengas puestos arriba</b>: si los cambiás, la tabla se
+    recalcula sola.</p>
+
+    <div class="tw">
+      <table id="matriz">
+        <thead><tr><th>Lente</th><th>sin expansor</th><th>2×</th><th>3×</th><th>4×</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="cap" id="matriz-cap"></p>
+
+    <div class="callout">
+      <p><b>El techo no es la física, es la apertura.</b> El haz expandido tiene que
+      <b>entrar</b> en la lente. Con ópticas de 1″ el diámetro útil es de unos
+      <b>23 mm</b> — más que eso se recorta, se pierde energía y aparecen anillos de
+      difracción. Las celdas marcadas en rojo ya pasaron ese límite: el número teórico se
+      calcula igual, pero en la mesa no se consigue.</p>
+      <p>Y con lente simple hay un segundo costo que la fórmula no muestra: al ensanchar el
+      haz se usa más el <b>borde</b> de la lente, donde la aberración esférica es peor. El
+      spot real se aleja del teórico justo en las combinaciones más agresivas. Un objetivo
+      no tiene ese problema porque está corregido — por eso llega a decenas de micrones
+      donde una lente simple se planta.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 3 · MANUAL ═══════════ -->
+<section>
+  <h2>3 · Cómo se mide — manual para el laboratorio</h2>
+  <p class="sub">Dos mediciones, en este orden. La primera hace falta para que la segunda
+  signifique algo.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">A · Medir la energía del pulso</h3>
+    <p>Un medidor de energía tiene una cabeza que absorbe el pulso y se calienta apenas.
+    Esa subida de temperatura se convierte en milijoules. No mide potencia: mide
+    <b>cuánta energía trajo cada disparo</b>.</p>
+
+    <div class="step"><div class="num">1</div><div>
+      <h4>Poner la cabeza donde va la muestra</h4>
+      <p>No en cualquier lado del camino: <b>en el plano de la muestra</b>. Lo que interesa es
+      la energía que <em>llega</em>, no la que sale del láser. Entre uno y otro hay espejos y
+      lentes que se comen una parte.</p>
+    </div></div>
+
+    <div class="step"><div class="num">2</div><div>
+      <h4>Elegir la escala y la longitud de onda en el medidor</h4>
+      <p>La cabeza responde distinto según el color de la luz. Si el medidor está configurado
+      con otra longitud de onda, el número va a estar mal sin que nada lo avise.</p>
+    </div></div>
+
+    <div class="step"><div class="num">3</div><div>
+      <h4>Disparar varias veces y anotar la dispersión</h4>
+      <p>Un solo disparo no dice nada. Tomá 20 y anotá <b>el promedio y cuánto varía</b>.
+      Un láser que varía mucho de disparo a disparo explica que unos puntos del mapa den
+      señal y otros no.</p>
+    </div></div>
+
+    <div class="step"><div class="num">4</div><div>
+      <h4>Repetir con el atenuador en varias posiciones</h4>
+      <p>Así queda una tabla de "posición del atenuador → mJ en la muestra". Esa tabla es
+      lo que después permite <b>pedir una fluencia</b> en vez de mover una perilla a ciegas.</p>
+    </div></div>
+
+    <div class="callout">
+      <p><b>Cuidado, es un láser clase 4.</b> Anteojos puestos todo el tiempo, nadie en la
+      línea del haz, y las reflexiones de la cabeza del medidor también queman: son
+      superficies que devuelven luz.</p>
+    </div>
+
+    <h3>B · Medir el diámetro del spot</h3>
+    <p>Lo directo: disparar sobre un testigo plano, mirar el cráter con el microscopio
+    —que ya está calibrado en píxeles por milímetro— y medirlo.</p>
+
+    <div class="callout data">
+      <p><b>El cráter no es el spot.</b> Siempre sale más grande, porque el calor se corre
+      hacia los costados. Sirve como <b>cota superior</b>: si el cráter mide 200 µm, el spot
+      es 200 o menos, nunca más.</p>
+    </div>
+
+    <p>Para el número de verdad está el <b>método D²</b>, que es el estándar en la literatura
+    y se hace con lo que ya tienen:</p>
+
+    <div class="step"><div class="num">1</div><div>
+      <h4>Disparar a varias energías</h4>
+      <p>Seis u ocho niveles distintos con el atenuador, un cráter limpio por nivel, sin
+      superponerlos.</p>
+    </div></div>
+    <div class="step"><div class="num">2</div><div>
+      <h4>Medir el diámetro de cada cráter</h4>
+      <p>Con la micrografía. Anotar diámetro y energía de cada uno.</p>
+    </div></div>
+    <div class="step"><div class="num">3</div><div>
+      <h4>Graficar el diámetro al cuadrado contra el logaritmo de la energía</h4>
+      <p>Los puntos caen en una recta. <b>La pendiente da el tamaño real del haz</b>, sin
+      depender de dónde uno decida que "termina" el cráter — que es la parte subjetiva que
+      este método elimina.</p>
+    </div></div>
+    <div class="step"><div class="num">4</div><div>
+      <h4>De yapa: el umbral de ablación</h4>
+      <p>Donde la recta cruza el eje está la energía mínima que marca el material. Es un dato
+      del material, y es útil por sí solo.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- ═══════════ 4 · ISHIKAWA ═══════════ -->
+<section>
+  <h2>4 · Ishikawa 6M — por qué el spot mide 200 y no 50</h2>
+  <p class="sub">Las seis espinas clásicas. Cada una <b>además</b> tiene que responder a los
+  objetivos del sistema: no alcanza con arreglar el spot si la solución no se puede
+  transferir, trazar o cambiar después.</p>
+
+  <div class="legend">
+    <span class="lg"><i style="background:var(--ok)"></i> ya está controlado</span>
+    <span class="lg"><i style="background:var(--warn)"></i> se puede controlar, falta hacerlo</span>
+    <span class="lg"><i style="background:var(--bad)"></i> crítico, hoy sin control</span>
+    <span class="lg-hint">Clic en cualquier nombre para abrirlo ↓</span>
+  </div>
+
+  <div class="fishwrap">
+    <svg id="fish" viewBox="0 0 1100 580" role="img"
+         aria-label="Diagrama de Ishikawa: seis espinas que convergen en el objetivo del spot"></svg>
+  </div>
+
+  <div id="panel" class="panel">
+    <p class="panel-empty">Hacé clic en una espina, en una causa, o en la cabeza del pescado.</p>
+  </div>
+
+  <div class="toolbar">
+    <button type="button" class="primary" id="btn-export">Ver todo como texto</button>
+    <button type="button" id="btn-copy">Copiar</button>
+    <button type="button" id="btn-clear">Borrar lo cargado</button>
+    <span class="msg" id="msg"></span>
+  </div>
+  <textarea id="dump" hidden readonly aria-label="Resumen en texto"></textarea>
+</section>
+
+<!-- ═══════════ 5 · KPIs ═══════════ -->
+<section>
+  <h2>5 · Líneas de base y KPIs</h2>
+  <p class="sub">Dos cosas distintas que conviene no mezclar, porque se miden en momentos
+  distintos y se usan para cosas distintas.</p>
+
+  <div class="callout">
+    <p><b>Una línea de base es un límite. Un KPI es un desempeño.</b></p>
+    <p>Lo que da un instrumento —la focal de una lente, la resolución de un espectrómetro— se
+    mide <b>una vez</b> y queda fijo hasta que cambies el hardware. No mejora porque lo
+    vigiles. Eso es una <b>línea de base</b>.</p>
+    <p>Lo que entrega el sistema completo —cuántos puntos salen válidos, cuánto tarda, qué
+    spot logra ese día— <b>varía</b>, y por eso se puede seguir y mejorar. Eso es un
+    <b>KPI</b>.</p>
+    <p style="margin-bottom:0"><b>El orden importa: sin línea de base no hay KPI posible.</b>
+    Fijar «spot ≤ 50 µm» sobre una óptica cuyo límite es 226 µm no controla nada — genera un
+    indicador siempre en rojo que a la semana nadie mira. Primero se caracteriza, después se
+    fijan metas.</p>
+  </div>
+
+  <h3>A · Líneas de base de los instrumentos <span style="font-weight:400;color:var(--ink-3)">— se miden una vez</span></h3>
+  <p style="font-size:14px;color:var(--ink-2)">Esto es lo que el equipo <em>puede</em> dar.
+  Define el techo de todo lo demás.</p>
+  <div class="card"><div class="tw"><table id="tbl-base"></table></div></div>
+
+  <h3>B · KPIs del sistema <span style="font-weight:400;color:var(--ink-3)">— se siguen sesión a sesión</span></h3>
+  <p style="font-size:14px;color:var(--ink-2)">Esto es lo que el sistema <em>entrega</em>.
+  Cada uno responde a un objetivo declarado del proyecto.</p>
+  <div class="card"><div class="tw"><table id="tbl-kpi"></table></div></div>
+
+  <div class="callout data">
+    <p><b>Ya tenés un KPI medido y quizá no lo sabías.</b> El diccionario WBS v3 dice que de
+    44 tareas verificables, <b>11 tienen prueba que las cubre</b>. Eso es
+    <b>25 % de cobertura requisito→test</b>, y es exactamente el KPI del objetivo
+    «certificable». Es un número, tiene fecha, y se puede mover.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 6 · CHECKLIST ═══════════ -->
+<section>
+  <h2>5 · Qué traer del laboratorio</h2>
+  <p class="sub">Con esto alcanza para cerrar el diagnóstico y escribir el código que falta.</p>
+  <div class="card chk" id="chk"></div>
+</section>
+
+<footer>
+  <p>microLIBS · Taller del spot · 23-sep-2026 · CITEDEF</p>
+  <p>Los cálculos son el mejor caso teórico para un haz gaussiano. La óptica real siempre
+  da un spot mayor: la diferencia entre lo calculado y lo medido <b>es</b> el dato.</p>
+</footer>
+
+</div>
+
+<script>
+/* ════════ cálculo ════════ */
+const $ = id => document.getElementById(id);
+const F = ["f","D","lensD","M2","lam","E","tau","esp","diam","tilt"];
+/* Focales tomadas de las piezas reales, fotografiadas el 25-Sep-2026.
+   LA1131 y LA1027 son plano-convexas Thorlabs de 1" montadas en LMR1. */
+const PRESETS = {
+  hoy:   {f:50,  D:6,  M2:10, lensD:25.4},
+  corta: {f:35,  D:6,  M2:10, lensD:25.4},
+  exp:   {f:50,  D:24, M2:10, lensD:25.4},
+  obj:   {f:10,  D:6,  M2:10, lensD:25.4}
+};
+const PRESET_NOTE = {
+  hoy:"LA1131, f=50 mm: la que está montada hoy. Falta medir D y M² reales.",
+  corta:"LA1027, f=35 mm: la otra lente que ya tenemos. Gana 1,4× sin comprar nada.",
+  exp:"Expansor 4× delante de la LA1131. Se conserva la distancia de trabajo.",
+  obj:"Un objetivo. La focal corta y, además, corrige aberraciones."
+};
+
+const num = id => parseFloat($(id).value) || 0;
+const fmt = (v, d=1) => (!isFinite(v) ? "—" : v.toLocaleString("es-AR",
+  {minimumFractionDigits:d, maximumFractionDigits:d}));
+
+function physics(){
+  const f = num("f"), D = num("D"), M2 = num("M2");
+  const lam = num("lam")*1e-6;            // nm -> mm
+  const E = num("E")*1e-3;               // mJ -> J
+  const tau = num("tau")*1e-9;           // ns -> s
+  if (D <= 0 || f <= 0) return null;
+
+  const d0_mm = 4*M2*lam*f/(Math.PI*D);  // diámetro de cintura, mm
+  const d0 = d0_mm*1000;                 // µm
+  const w0 = d0_mm/2;
+  const zR = Math.PI*w0*w0/(M2*lam);     // mm
+  const dof = 2*zR;                      // mm
+  const area = Math.PI*Math.pow(d0_mm/10/2, 2);  // cm²  (mm->cm = /10)
+  const flu = area > 0 ? E/area : NaN;           // J/cm²
+  const irr = tau > 0 ? flu/tau/1e9 : NaN;       // GW/cm²
+  return {f, D, M2, d0, dof, zR, flu, irr, fnum:f/D};
+}
+
+/* ════════ matriz lente × expansor ════════
+   Recalcula con el M², la λ y el diámetro de haz que el usuario tenga puestos.
+   El límite de apertura es el diámetro útil de una óptica de 1": ~23 mm. */
+const LENTES = [
+  {n:"LA1131 — f=50 mm", f:50,  nota:"la montada hoy"},
+  {n:"LA1027 — f=35 mm", f:35,  nota:"la otra que ya tenemos"},
+  {n:"Objetivo — f=10 mm", f:10, nota:"¿habría que comprarlo?"}
+];
+const EXPANSORES = [1, 2, 3, 4];
+const APERTURA_UTIL = 23;               // mm
+
+function renderMatriz(){
+  const tb = document.querySelector("#matriz tbody");
+  if (!tb) return;
+  const D = num("D"), M2 = num("M2"), lam = num("lam")*1e-6;
+  if (D <= 0) return;
+
+  let recortadas = 0;
+  tb.innerHTML = LENTES.map(L => {
+    const celdas = EXPANSORES.map(x => {
+      const Dx = D * x;
+      const d0 = 4*M2*lam*L.f/(Math.PI*Dx) * 1000;      // µm
+      const recorta = Dx > APERTURA_UTIL;
+      if (recorta) recortadas++;
+      const color = recorta ? "var(--bad)"
+                  : (d0 <= 55 ? "var(--ok)" : (d0 <= 110 ? "var(--warn)" : "var(--ink-3)"));
+      const aviso = recorta
+        ? `<br><span style="font-size:11px">haz ${fmt(Dx,0)} mm — no entra</span>` : "";
+      return `<td style="color:${color}"><b>${fmt(d0,0)} µm</b>${aviso}</td>`;
+    }).join("");
+    return `<tr><td><b>${L.n}</b><br><span class="u" style="font-size:11px">${L.nota}</span></td>${celdas}</tr>`;
+  }).join("");
+
+  const cap = $("matriz-cap");
+  if (cap) cap.innerHTML =
+    `Con haz de <b>${fmt(D,1)} mm</b>, M² = <b>${fmt(M2,1)}</b> y λ = <b>${num("lam")} nm</b>. `
+    + `Verde ≤ 55 µm (objetivo cumplido), ámbar hasta 110 µm, rojo = el haz no entra en la lente.`
+    + (recortadas ? ` <b style="color:var(--bad)">${recortadas} combinación(es) quedan fuera de apertura.</b>` : "");
+}
+
+function render(){
+  const r = physics();
+  if (!r) return;
+  renderMatriz();
+  const meta = r.d0 <= 55 ? "ok" : (r.d0 <= 110 ? "warn" : "bad");
+  const dofTxt = r.dof >= 1 ? fmt(r.dof,2)+" <span class='u'>mm</span>"
+                            : fmt(r.dof*1000,0)+" <span class='u'>µm</span>";
+
+  $("outs").innerHTML = `
+    <div class="out hero">
+      <span class="k">Diámetro del spot (teórico)</span>
+      <span class="v">${fmt(r.d0,0)} <span class="u" style="font-size:15px">µm</span></span>
+      <span class="note">Objetivo: 50 µm · Hoy se mide ~200 µm</span>
+    </div>
+    <div class="out">
+      <span class="k">Profundidad de foco</span>
+      <span class="v">${dofTxt}</span>
+      <span class="note">Cuánto se puede mover la muestra sin desenfocar</span>
+    </div>
+    <div class="out">
+      <span class="k">Fluencia</span>
+      <span class="v">${fmt(r.flu,1)} <span class="u" style="font-size:13px">J/cm²</span></span>
+      <span class="note">Energía por unidad de área</span>
+    </div>
+    <div class="out">
+      <span class="k">Irradiancia</span>
+      <span class="v">${fmt(r.irr,1)} <span class="u" style="font-size:13px">GW/cm²</span></span>
+      <span class="note">Para LIBS conviene estar bien arriba de 1</span>
+    </div>
+    <div class="out">
+      <span class="k">f/#</span>
+      <span class="v">f/${fmt(r.fnum,1)}</span>
+      <span class="note">Abajo de f/4 la aberración pesa mucho</span>
+    </div>`;
+
+  /* ── veredicto ── */
+  const v = $("verdict");
+  let txt;
+  if (r.d0 <= 55){
+    txt = `<p><b>Con esta óptica se llega.</b> El spot teórico es ${fmt(r.d0,0)} µm.
+      Pero mirá la profundidad de foco: <b>${r.dof>=1?fmt(r.dof,2)+" mm":fmt(r.dof*1000,0)+" µm"}</b>.
+      Esa es toda la tolerancia que tenés para la altura de la muestra a lo largo de
+      <em>todo</em> el barrido. A ojo no se sostiene: hace falta enfocar con método.</p>`;
+  } else if (r.d0 <= 110){
+    txt = `<p><b>Se acerca pero no llega.</b> ${fmt(r.d0,0)} µm contra 50 de objetivo.
+      Falta un factor de ${fmt(r.d0/50,1)}×: se consigue acortando la focal o ensanchando
+      el haz en esa misma proporción.</p>`;
+  } else {
+    txt = `<p><b>Con esta óptica no se llega.</b> ${fmt(r.d0,0)} µm contra 50 de objetivo:
+      falta un factor de <b>${fmt(r.d0/50,1)}×</b>. Hay que bajar la focal a
+      ${fmt(r.f*50/r.d0,0)} mm, o ensanchar el haz hasta ${fmt(r.D*r.d0/50,0)} mm,
+      o combinar las dos cosas.</p>`;
+  }
+  v.innerHTML = txt;
+  v.style.borderLeftColor = `var(--${meta==="ok"?"ok":meta==="warn"?"warn":"bad"})`;
+
+  drawMacro(r);
+  drawBench(r);
+  save();
+}
+
+/* ════════ vista macro — a escala real en los dos ejes ════════
+   Aca SI se puede dibujar todo proporcionado: la lente de 1", el haz que la
+   atraviesa y la pastilla de 10 mm inclinada. La cintura, en cambio, es un
+   punto: para eso esta el zoom de abajo.                                     */
+function drawMacro(r){
+  const W = 900, H = 250, cy = 118;
+  const esp  = Math.max(num("esp"), 0.01);
+  const diam = Math.max(num("diam"), 0.01);
+  const lensD = Math.max(num("lensD"), 0.5);
+  const tiltDeg = Math.max(num("tilt"), 0);
+
+  // una sola escala para los dos ejes: eso es lo que la hace "real"
+  const s = Math.min(600/Math.max(r.f,1), 176/Math.max(lensD, diam));
+  const xL = 150;                       // lente
+  const xF = xL + r.f*s;                // foco
+  const hL = lensD*s/2, hB = r.D*s/2, hS = diam*s/2, wS = esp*s;
+  const fill = 100*r.D/lensD;
+  const clip = r.D > lensD;
+
+  const sweep = diam*Math.tan(tiltDeg*Math.PI/180);
+
+  $("macro").innerHTML = `
+    <rect x="0" y="0" width="${W}" height="${H}" fill="var(--surface)"/>
+    <line x1="10" y1="${cy}" x2="${W-10}" y2="${cy}"
+          stroke="var(--line-2)" stroke-width="1" stroke-dasharray="5 5"/>
+
+    <!-- parte de la lente que el haz NO usa -->
+    <rect x="${xL-7}" y="${cy-hL}" width="14" height="${hL*2}" rx="7"
+          fill="var(--data)" opacity="0.16" stroke="var(--data)" stroke-width="1.5"/>
+    <!-- parte que el haz sí usa -->
+    <rect x="${xL-7}" y="${cy-Math.min(hB,hL)}" width="14" height="${Math.min(hB,hL)*2}" rx="4"
+          fill="var(--data)" opacity="0.5"/>
+
+    <!-- haz entrante, paralelo -->
+    <rect x="18" y="${cy-hB}" width="${xL-25}" height="${hB*2}"
+          fill="var(--beam)" opacity="0.22"/>
+    <line x1="18" y1="${cy-hB}" x2="${xL-7}" y2="${cy-hB}" stroke="var(--beam)" stroke-width="2"/>
+    <line x1="18" y1="${cy+hB}" x2="${xL-7}" y2="${cy+hB}" stroke="var(--beam)" stroke-width="2"/>
+
+    <!-- cono convergente -->
+    <path d="M${xL+7},${cy-hB} L${xF},${cy} L${xL+7},${cy+hB} Z"
+          fill="var(--beam)" opacity="0.22"/>
+    <line x1="${xL+7}" y1="${cy-hB}" x2="${xF}" y2="${cy}" stroke="var(--beam)" stroke-width="2"/>
+    <line x1="${xL+7}" y1="${cy+hB}" x2="${xF}" y2="${cy}" stroke="var(--beam)" stroke-width="2"/>
+
+    <!-- pastilla, inclinada sobre su centro -->
+    <g transform="rotate(${tiltDeg}, ${xF}, ${cy})">
+      <rect x="${xF}" y="${cy-hS}" width="${Math.max(wS,3)}" height="${hS*2}"
+            fill="var(--ink-3)" opacity="0.33" stroke="var(--ink-2)" stroke-width="1.5"/>
+      <line x1="${xF}" y1="${cy-hS}" x2="${xF}" y2="${cy+hS}"
+            stroke="var(--ink)" stroke-width="2.5"/>
+    </g>
+    <circle cx="${xF}" cy="${cy}" r="3" fill="var(--beam)"/>
+
+    <!-- cotas -->
+    <line x1="${xL-26}" y1="${cy-hL}" x2="${xL-26}" y2="${cy+hL}"
+          stroke="var(--data)" stroke-width="1.5"/>
+    <text x="${xL-32}" y="${cy-hL-7}" text-anchor="end" font-family="var(--f-mono)"
+          font-size="11.5" fill="var(--data)">lente ${fmt(lensD,1)} mm</text>
+    <text x="${xL-32}" y="${cy+hL+15}" text-anchor="end" font-family="var(--f-mono)"
+          font-size="11.5" fill="var(--beam)">haz ${fmt(r.D,1)} mm</text>
+
+    <line x1="${xF+Math.max(wS,3)+26}" y1="${cy-hS}" x2="${xF+Math.max(wS,3)+26}" y2="${cy+hS}"
+          stroke="var(--ink-3)" stroke-width="1.5"/>
+    <text x="${xF+Math.max(wS,3)+33}" y="${cy-hS+13}" font-family="var(--f-mono)"
+          font-size="11.5" fill="var(--ink-2)">pastilla</text>
+    <text x="${xF+Math.max(wS,3)+33}" y="${cy-hS+28}" font-family="var(--f-mono)"
+          font-size="11.5" fill="var(--ink-3)">⌀ ${fmt(diam,0)} mm</text>
+    ${tiltDeg > 0 ? `<text x="${xF+Math.max(wS,3)+33}" y="${cy-hS+43}"
+      font-family="var(--f-mono)" font-size="11.5" fill="var(--bad)">${fmt(tiltDeg,2)}°</text>` : ""}
+
+    <line x1="${xL}" y1="${H-34}" x2="${xF}" y2="${H-34}" stroke="var(--ink-3)" stroke-width="1"/>
+    <line x1="${xL}" y1="${H-39}" x2="${xL}" y2="${H-29}" stroke="var(--ink-3)" stroke-width="1"/>
+    <line x1="${xF}" y1="${H-39}" x2="${xF}" y2="${H-29}" stroke="var(--ink-3)" stroke-width="1"/>
+    <text x="${(xL+xF)/2}" y="${H-40}" text-anchor="middle" font-family="var(--f-mono)"
+          font-size="11.5" fill="var(--ink-3)">f = ${fmt(r.f,0)} mm</text>
+
+    <text x="${W-14}" y="${H-12}" text-anchor="end" font-family="var(--f-sans)"
+          font-size="11" fill="var(--ink-3)">todo a escala · 1 mm = ${fmt(s,1)} px</text>`;
+
+  $("macrocap").innerHTML =
+    (clip
+      ? `<b style="color:var(--bad)">El haz es más ancho que la lente: se está recortando.</b>
+         Se pierde energía y aparecen anillos de difracción. `
+      : `El haz usa <b>${fmt(fill,0)} %</b> del diámetro de la lente. ` +
+        (fill < 50
+          ? `<b>Ese es el problema principal a la vista</b>: la lente es grande pero el haz
+             entra angosto, y el cono sale casi plano. Un cono plano da un foco gordo.
+             Subí el diámetro del haz y mirá cómo se cierra. `
+          : `El cono está bien cerrado. `))
+    + (tiltDeg > 0
+      ? `La pastilla está dibujada con su inclinación real de ${fmt(tiltDeg,2)}°:
+         a simple vista casi no se nota, y <b>ese es justamente el riesgo</b> — mueve la
+         superficie ${sweep>=1?fmt(sweep,2)+" mm":fmt(sweep*1000,0)+" µm"} de un borde al otro.
+         Abajo se ve contra qué se compara.`
+      : `La pastilla está perfectamente plana. Poné 1° de inclinación y mirá el gráfico de abajo.`);
+}
+
+/* ════════ diagrama del haz ════════
+   La escala horizontal es FIJA (12 mm de punta a punta). Asi la pastilla mide
+   siempre lo mismo en pantalla y funciona como regla: lo unico que cambia de
+   tamano es la zona de foco.                                                  */
+const SPAN_MM = 12;
+
+function drawBench(r){
+  const W = 900, H = 400;
+  const x0 = 60, x1 = 855, cy = 132;          // area del haz
+  const pxPerMm = (x1 - x0)/SPAN_MM;
+  const focusX  = x0 + (SPAN_MM/2)*pxPerMm;   // cintura al medio
+
+  const esp  = Math.max(num("esp"), 0.01);
+  const diam = Math.max(num("diam"), 0.01);
+  const tiltDeg = Math.max(num("tilt"), 0);
+  const sweep = diam*Math.tan(tiltDeg*Math.PI/180);   // mm que recorre la superficie
+
+  const w0um = r.d0/2;
+  const wAt = z => w0um*Math.sqrt(1 + Math.pow(z/(r.zR||1e-9),2));
+  const wEdge = wAt(SPAN_MM/2);
+  const pxPerUm = (cy - 34)/Math.max(wEdge, w0um*1.3);
+
+  let top = "", bot = "";
+  const N = 120;
+  for (let i=0; i<=N; i++){
+    const z = -SPAN_MM/2 + SPAN_MM*i/N;
+    const x = focusX + z*pxPerMm, y = wAt(z)*pxPerUm;
+    top += `${i?"L":"M"}${x.toFixed(1)},${(cy-y).toFixed(1)}`;
+    bot += `${i?"L":"M"}${x.toFixed(1)},${(cy+y).toFixed(1)}`;
+  }
+
+  const dofPxRaw = r.dof*pxPerMm;
+  const dofPx = Math.max(Math.min(dofPxRaw, x1-x0), 2.5);
+  const clipped = dofPxRaw > (x1-x0);
+  const espPx = esp*pxPerMm;
+  const w0px = Math.max(w0um*pxPerUm, 1.3);
+  const sweepPx = Math.max(sweep*pxPerMm, sweep > 0 ? 2 : 0);
+  // inclinacion de la cara dentro de la franja que muestra el zoom
+  const panelH = cy*2 - 36;
+  const panelMm = (panelH/pxPerUm)/1000;
+  const dxTilt = panelMm*Math.tan(tiltDeg*Math.PI/180)*pxPerMm;
+
+  /* barras comparativas: misma escala, todas empezando en el mismo borde */
+  const barX = 168, barMax = x1 - barX;
+  const bar = (y, mm, color, label, val) => {
+    const w = Math.max(Math.min(mm*pxPerMm, barMax), 2);
+    const over = mm*pxPerMm > barMax;
+    return `
+      <text x="${barX-12}" y="${y+13}" text-anchor="end" font-family="var(--f-sans)"
+            font-size="12" fill="var(--ink-2)">${label}</text>
+      <rect x="${barX}" y="${y}" width="${w}" height="17" rx="3" fill="${color}"/>
+      <text x="${barX + w + 9}" y="${y+13}" font-family="var(--f-mono)" font-size="12"
+            font-weight="600" fill="${color}">${val}${over?" ▸":""}</text>`;
+  };
+  const mmTxt = mm => mm >= 1 ? fmt(mm,2)+" mm" : fmt(mm*1000,0)+" µm";
+
+  $("bench").innerHTML = `
+    <rect x="0" y="0" width="${W}" height="${H}" fill="var(--surface)"/>
+
+    <!-- eje optico -->
+    <line x1="12" y1="${cy}" x2="${x1+10}" y2="${cy}"
+          stroke="var(--line-2)" stroke-width="1" stroke-dasharray="5 5"/>
+
+    <!-- zona de foco -->
+    <rect x="${focusX-dofPx/2}" y="26" width="${dofPx}" height="${cy*2-52}"
+          fill="var(--beam)" opacity="0.16"/>
+    <line x1="${focusX-dofPx/2}" y1="26" x2="${focusX-dofPx/2}" y2="${cy*2-26}"
+          stroke="var(--beam)" stroke-width="1.5"/>
+    <line x1="${focusX+dofPx/2}" y1="26" x2="${focusX+dofPx/2}" y2="${cy*2-26}"
+          stroke="var(--beam)" stroke-width="1.5"/>
+
+    <!-- recorrido que hace la superficie por la inclinacion, de borde a borde -->
+    ${sweep > 0 ? `
+    <rect x="${focusX-sweepPx/2}" y="14" width="${sweepPx}" height="${cy*2-28}"
+          fill="var(--bad)" opacity="0.14"/>
+    <line x1="${focusX-sweepPx/2}" y1="14" x2="${focusX-sweepPx/2}" y2="${cy*2-14}"
+          stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="${focusX+sweepPx/2}" y1="14" x2="${focusX+sweepPx/2}" y2="${cy*2-14}"
+          stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="${focusX+sweepPx/2+7}" y="${cy*2-14}" font-family="var(--f-sans)"
+          font-size="11.5" fill="var(--bad)">recorrido de la superficie a ${fmt(tiltDeg,2)}°</text>` : ""}
+
+    <!-- pastilla: la cara entra en z=0, inclinada -->
+    <g transform="translate(${focusX},${cy}) skewY(${-Math.atan2(dxTilt, panelH)*180/Math.PI}) translate(${-focusX},${-cy})">
+      <rect x="${focusX}" y="18" width="${espPx}" height="${cy*2-36}"
+            fill="var(--ink-3)" opacity="0.20"/>
+      <line x1="${focusX}" y1="18" x2="${focusX}" y2="${cy*2-18}"
+            stroke="var(--ink-2)" stroke-width="2.5"/>
+      <line x1="${focusX+espPx}" y1="18" x2="${focusX+espPx}" y2="${cy*2-18}"
+            stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="3 3"/>
+    </g>
+    <text x="${focusX+espPx/2}" y="${cy*2-4}" text-anchor="middle"
+          font-family="var(--f-sans)" font-size="11.5" fill="var(--ink-2)">
+      pastilla ${fmt(esp,1)} mm</text>
+
+    <!-- haz -->
+    <path d="${top}" fill="none" stroke="var(--beam)" stroke-width="2.2"/>
+    <path d="${bot}" fill="none" stroke="var(--beam)" stroke-width="2.2"/>
+
+    <!-- de dónde viene el haz -->
+    <text x="14" y="${cy-6}" font-family="var(--f-sans)" font-size="11.5"
+          fill="var(--ink-3)">desde la lente →</text>
+
+    <!-- cintura -->
+    <line x1="${focusX}" y1="${cy-w0px}" x2="${focusX}" y2="${cy+w0px}"
+          stroke="var(--ink)" stroke-width="3.5"/>
+    <text x="${focusX}" y="${cy-Math.max(w0px,10)-10}" text-anchor="middle"
+          font-family="var(--f-mono)" font-size="13" font-weight="600" fill="var(--ink)">
+      ${fmt(r.d0,0)} µm</text>
+    <text x="${focusX-dofPx/2-8}" y="20" text-anchor="end" font-family="var(--f-sans)"
+          font-size="11.5" fill="var(--beam)">zona de foco${clipped?" (se sale del gráfico)":""}</text>
+
+    <!-- comparacion de longitudes -->
+    <line x1="${x0}" y1="${cy*2+14}" x2="${x1}" y2="${cy*2+14}" stroke="var(--line)" stroke-width="1"/>
+    <text x="${x0}" y="${cy*2+36}" font-family="var(--f-sans)" font-size="11"
+          font-weight="600" fill="var(--ink-3)" letter-spacing="0.07em">
+      COMPARADAS A LA MISMA ESCALA</text>
+    ${bar(cy*2+46, r.dof, "var(--beam)", "zona de foco", mmTxt(r.dof))}
+    ${bar(cy*2+74, esp, "var(--ink-3)", "espesor pastilla", mmTxt(esp))}
+    ${bar(cy*2+102, sweep, sweep > r.dof ? "var(--bad)" : "var(--ok)",
+          `desnivel a ${fmt(tiltDeg,2)}°`, mmTxt(sweep))}`;
+
+  /* veredicto del montaje */
+  const pct = r.dof > 0 ? 100*sweep/r.dof : Infinity;
+  let msg;
+  if (sweep === 0){
+    msg = `Con la pastilla perfectamente plana no hay problema de montaje. Poné una
+      inclinación de 1° para ver qué pasa en la realidad.`;
+  } else if (pct < 35){
+    msg = `Una inclinación de ${fmt(tiltDeg,2)}° mueve la superficie
+      <b>${mmTxt(sweep)}</b> a lo largo de la pastilla: <b>${fmt(pct,0)} %</b> de la zona de
+      foco. Hay margen.`;
+  } else if (pct < 100){
+    msg = `Ojo: ${fmt(tiltDeg,2)}° de inclinación se comen <b>${fmt(pct,0)} %</b> de la zona
+      de foco. Queda poco margen para el relieve de la muestra.`;
+  } else {
+    msg = `<b>Así no cierra.</b> Con ${fmt(tiltDeg,2)}° la superficie recorre
+      ${mmTxt(sweep)}, que es <b>${fmt(pct/100,1)}×</b> la zona de foco: una parte del barrido
+      va a salir desenfocada sí o sí. O se nivela mejor, o hay que re-enfocar por zonas.`;
+  }
+  $("benchcap").innerHTML = `La <b>pastilla gris mide siempre lo mismo</b> en el gráfico:
+    es la regla. Lo único que cambia de tamaño es la banda naranja. Acortá la focal y mirá
+    cómo se angosta contra los ${fmt(esp,1)} mm de la muestra.<br><br>${msg}`;
+}
+
+/* ════════ ishikawa ════════ */
+/* ════════ Ishikawa 6M ════════
+   st: "ok" ya controlado · "warn" controlable, falta · "bad" critico sin control
+   Los estados son una PROPUESTA: se cambian desde el panel.                  */
+const FISH = [
+ {k:"maquina", nm:"Máquina", pos:"up", obj:"Modular · Expandible",
+  que:"Todo lo físico que interviene: la óptica, el láser, la platina, los soportes y " +
+      "los instrumentos que se le conectan.",
+  incluir:"Preguntá por cada pieza del camino del haz, desde que sale del láser hasta que " +
+          "llega a la muestra. Si una pieza se puede cambiar por otra marca, va acá.",
+  objWhy:"Acá entran instrumentos nuevos (el atenuador, el medidor de energía). Si se " +
+         "programan con la marca metida adentro del código, cambiarlos después rompe todo. " +
+         "Tienen que entrar como capacidades, no como marcas.",
+  kpi:["f/# efectivo del tren óptico",
+       "Es lo que determina el spot alcanzable. Si no baja, ninguna otra espina alcanza."],
+  smartPh:"ej.: óptica f/4 montada y spot medido ≤ 60 µm, 15-oct",
+  causes:[
+   {s:"Lente simple", st:"bad", t:"Lente gruesa simple: aberración esférica",
+    med:"Marca, modelo y focal de la lente actual",
+    cm:"Cambiar a un objetivo, o a una focal más corta corregida"},
+   {s:"Haz no llena", st:"bad", t:"El haz no llena la apertura de la lente",
+    med:"Diámetro del haz al llegar a la lente (mm)",
+    cm:"Expansor, verificando que no recorte"},
+   {s:"Energía mínima", st:"warn", t:"Se trabaja en la energía mínima del láser",
+    med:"mJ en el mínimo, medidos en el plano de la muestra",
+    cm:"Conectar el atenuador para poder elegir la energía"},
+   {s:"Atenuador", st:"warn", t:"Atenuador sin conectar al sistema",
+    med:"Marca, modelo y año del atenuador",
+    cm:"Driver nuevo detrás de una capacidad, no atado a la marca"},
+   {s:"M² del láser", st:"bad", t:"Calidad del haz M²: pone el piso de lo alcanzable",
+    med:"M² de hoja de datos, o medido",
+    cm:"No se puede cambiar sin cambiar el láser. Es una restricción, no un problema"},
+   {s:"λ del láser", st:"bad", t:"La longitud de onda fija el límite de difracción",
+    med:"nm",
+    cm:"Restricción del equipo: entra en la cuenta, no se negocia"},
+   {s:"Expansor", st:"warn", t:"No hay expansor de haz montado",
+    med:"¿Existe uno disponible? Factor",
+    cm:"Es el camino que conserva la distancia de trabajo"},
+   {s:"Montaje muestra", st:"bad", t:"El soporte no garantiza perpendicularidad",
+    med:"Inclinación real medida (grados)",
+    cm:"Soporte con ajuste, o referencia mecánica plana"},
+   {s:"Eje Z", st:"ok", t:"Eje Z motorizado disponible en la platina",
+    med:"Recorrido y repetibilidad",
+    cm:"Ya existe y el software ya lo declara: falta usarlo para enfocar"}
+  ]},
+
+ {k:"metodo", nm:"Método", pos:"up", obj:"Transferible",
+  que:"Cómo se hacen las cosas: la secuencia de pasos, los criterios para decidir, y qué " +
+      "se considera terminado.",
+  incluir:"Todo lo que hoy alguien hace 'como sabe'. Si no está escrito, va acá. " +
+          "Preguntá: ¿otra persona podría repetirlo leyendo algo?",
+  objWhy:"Un método que vive en la cabeza de una persona no se transfiere. Para que el " +
+         "sistema se pueda entregar a otro laboratorio, cada paso tiene que ser ejecutable " +
+         "por alguien que no estuvo en esta conversación.",
+  kpi:["Dispersión del spot entre enfoques sucesivos (%)",
+       "Un método repetible da el mismo número al repetirlo. Si varía, el método no existe."],
+  smartPh:"ej.: procedimiento de enfoque escrito y probado por otra persona",
+  causes:[
+   {s:"Foco a ojo", st:"bad", t:"El foco se pone a ojo, sin procedimiento repetible",
+    med:"¿Cómo se enfoca hoy? Describilo paso a paso",
+    cm:"Procedimiento escrito con criterio numérico de corte"},
+   {s:"No se mide spot", st:"bad", t:"No se mide el spot: no se sabe si mejoró",
+    med:"¿Qué método de medición se acordó?",
+    cm:"Método D², documentado y repetible"},
+   {s:"Sin criterio", st:"warn", t:"No hay criterio de aceptación del foco",
+    med:"¿Qué valor se acepta como «enfocado»?",
+    cm:"Un número, no una impresión"},
+   {s:"Z sin registrar", st:"warn", t:"No queda registro de la altura de enfoque",
+    med:"¿Se puede leer y anotar la Z?",
+    cm:"Guardarla junto con el dato del punto"},
+   {s:"Orden enfoque", st:"warn", t:"No está definido si se enfoca una vez o por zona",
+    med:"¿Cuántas veces se enfoca en un barrido?",
+    cm:"Depende del relieve medido contra la profundidad de foco"}
+  ]},
+
+ {k:"medicion", nm:"Medición", pos:"up", obj:"Trazable · Calidad",
+  que:"Con qué y cómo se obtienen los números: los instrumentos de medida, su calibración " +
+      "y su incertidumbre.",
+  incluir:"Cada número que aparece en un informe tiene que poder responder: ¿con qué se " +
+          "midió? ¿con cuánta incertidumbre? ¿estaba calibrado?",
+  objWhy:"Una medición sin instrumento identificado, sin incertidumbre y sin calibración " +
+         "vigente no es una medición: es una impresión. Y no se puede comparar con la de " +
+         "la semana que viene.",
+  kpi:["Incertidumbre relativa del spot medido (%)",
+       "Un número sin incertidumbre no se puede comparar con otro."],
+  smartPh:"ej.: spot medido por D² con incertidumbre declarada",
+  causes:[
+   {s:"Sin medir spot", st:"bad", t:"No existe forma de medir el diámetro del spot",
+    med:"Diámetro de cráter medido (µm)",
+    cm:"Método D² sobre un testigo plano"},
+   {s:"Sin medir E", st:"bad", t:"No se mide la energía que llega a la muestra",
+    med:"mJ en el plano de la muestra",
+    cm:"Medidor en el plano de la muestra, no en el camino"},
+   {s:"Escala µm/px", st:"warn", t:"Escala de la micrografía sin verificar",
+    med:"¿Cuántos µm por píxel?",
+    cm:"Determina si 50 µm es siquiera medible con esta cámara"},
+   {s:"Dispersión", st:"warn", t:"Dispersión disparo a disparo desconocida",
+    med:"% de variación en 20 disparos",
+    cm:"Explica por qué unos puntos dan señal y otros no"},
+   {s:"Medidor E", st:"warn", t:"Medidor de energía sin integrar al sistema",
+    med:"Marca y modelo",
+    cm:"Si habla por puerto serie, se automatiza"},
+   {s:"Calibraciones", st:"warn", t:"Calibración de los instrumentos sin verificar",
+    med:"¿Vigente? ¿Con certificado?",
+    cm:"Requisito de calidad, no opcional"},
+   {s:"Incertidumbre", st:"bad", t:"No se declara la incertidumbre de las mediciones",
+    med:"¿Se calcula?",
+    cm:"Sin esto, los números no se pueden comparar en el tiempo"}
+  ]},
+
+ {k:"material", nm:"Material", pos:"down", obj:"Trazable",
+  que:"Sobre qué se mide: las pastillas de microplástico, los testigos de referencia y " +
+      "todo lo que se consume.",
+  incluir:"Las propiedades de la muestra que afectan el resultado: planitud, espesor, " +
+          "homogeneidad, y de dónde salió cada una.",
+  objWhy:"Si no queda registrado sobre qué material se midió y con qué características, " +
+         "el número no se puede reproducir ni comparar con el de otra sesión.",
+  kpi:["Relieve de la muestra ÷ profundidad de foco",
+       "Si da más de 1, parte del barrido sale de foco sí o sí. Decide si hay que re-enfocar por zonas."],
+  smartPh:"ej.: testigo de referencia definido y su planitud medida",
+  causes:[
+   {s:"Planitud", st:"bad", t:"Planitud y relieve de la pastilla sin caracterizar",
+    med:"¿Cuánto relieve tiene, en µm?",
+    cm:"Comparar contra la profundidad de foco calculada"},
+   {s:"Espesor variable", st:"warn", t:"Espesor variable entre pastillas",
+    med:"Rango de espesores medido",
+    cm:"Referencia por la cara de arriba, no por la de abajo"},
+   {s:"Altura montaje", st:"warn", t:"La altura de montaje no es repetible",
+    med:"¿Se vuelve a la misma altura entre sesiones?",
+    cm:"Referencia mecánica fija"},
+   {s:"Sin testigo", st:"bad", t:"No hay testigo de referencia definido",
+    med:"¿Sobre qué material se van a medir los cráteres?",
+    cm:"Material plano y homogéneo, siempre el mismo"}
+  ]},
+
+ {k:"persona", nm:"Mano de obra", pos:"down", obj:"Transferible",
+  que:"Quién opera y con qué formación: la parte del resultado que depende de las personas.",
+  incluir:"Todo lo que cambia según quién esté ese día. Incluye la formación, la " +
+          "experiencia previa y la seguridad.",
+  objWhy:"Si el resultado cambia según quién opere, el sistema no es transferible aunque " +
+         "funcione perfecto. El objetivo es que dos personas distintas lleguen al mismo número.",
+  kpi:["Diferencia de spot entre dos operadores (%)",
+       "Mide transferibilidad directamente: si supera el 10 %, el resultado depende de quién opere."],
+  smartPh:"ej.: dos operadores miden el mismo spot con diferencia menor al 10 %",
+  causes:[
+   {s:"Depende de quién", st:"bad", t:"El enfoque depende de quién lo haga y de ese día",
+    med:"¿Cuántas personas enfocan hoy?",
+    cm:"Procedimiento escrito más criterio numérico"},
+   {s:"Sin formación", st:"warn", t:"No hay formación formal en la medición de energía",
+    med:"¿Quién sabe medir energía?",
+    cm:"La sección 3 de esta página es el manual"},
+   {s:"Sin cruzar", st:"warn", t:"Reproducibilidad entre operadores sin verificar",
+    med:"¿Se probó que dos personas den lo mismo?",
+    cm:"Medición cruzada, y anotar la diferencia"},
+   {s:"Seguridad", st:"ok", t:"Seguridad láser clase 4",
+    med:"¿Todos con anteojos y entrenados?",
+    cm:"Requisito permanente, no una recomendación"}
+  ]},
+
+ {k:"ambiente", nm:"Medio ambiente", pos:"down", obj:"Calidad · Trazable",
+  que:"Las condiciones del lugar durante la medición: vibración, temperatura, limpieza, luz.",
+  incluir:"Todo lo que está alrededor y puede cambiar entre una sesión y otra sin que nadie " +
+          "lo toque a propósito.",
+  objWhy:"Si un resultado no se reproduce, lo primero que hay que poder descartar es que " +
+         "cambió el ambiente. Para descartarlo hay que haberlo registrado.",
+  kpi:["Deriva del spot a lo largo de un barrido completo (%)",
+       "Separa un problema de óptica de uno de ambiente: si el spot se degrada con el tiempo, es térmico o vibración."],
+  smartPh:"ej.: condiciones ambientales registradas en cada sesión",
+  causes:[
+   {s:"Vibración", st:"ok", t:"Vibración: mesa óptica antivibratoria, flotante",
+    med:"¿Está flotando durante la medición?",
+    cm:"Ya resuelto por la mesa. Verificar que esté activa"},
+   {s:"Deriva térmica", st:"warn", t:"Deriva térmica durante la sesión",
+    med:"¿Cuánto dura un barrido completo?",
+    cm:"A 16 veces más puntos, el barrido se alarga mucho"},
+   {s:"Polvo óptica", st:"warn", t:"Polvo sobre la óptica",
+    med:"¿Se cubre entre sesiones?",
+    cm:"Daña con el pulso y dispersa el haz"},
+   {s:"Luz ambiente", st:"warn", t:"Luz ambiente durante la adquisición",
+    med:"¿Se apagan las luces?",
+    cm:"Entra en el fondo del espectro"},
+   {s:"Sin registrar", st:"warn", t:"Las condiciones de sesión no se registran",
+    med:"¿Se anota temperatura y fecha?",
+    cm:"Sin esto no hay reproducibilidad demostrable"}
+  ]}
+];
+
+const OBJDEF = {
+  "Transferible":"Otra persona, u otro laboratorio, lo puede poner en marcha sin que estemos nosotros.",
+  "Trazable":"De cualquier resultado se puede reconstruir después cómo se obtuvo.",
+  "Modular":"Cada pieza se puede cambiar sin tocar las demás.",
+  "Expandible":"Sumar un instrumento o una técnica nueva no obliga a rehacer lo que hay.",
+  "Calidad":"Toda medición declara su instrumento, su incertidumbre y su calibración."
+};
+
+
+/* ════════ estado editable del ishikawa ════════ */
+const IK = {st:{}, val:{}, sm:{}, kb:{}, km:{}, plazo:""};
+FISH.forEach(b => b.causes.forEach((c,j) => IK.st[`${b.k}-${j}`] = c.st));
+const COL = {ok:"var(--ok)", warn:"var(--warn)", bad:"var(--bad)"};
+const COLNM = {ok:"controlado", warn:"controlable", bad:"crítico"};
+
+/* ════════ el pescado ════════ */
+function drawFish(){
+  const W=1100, H=580, sy=290, sx0=52, sx1=858;
+  const ATT = [300, 530, 760], DX = 162, DY = 196;
+  let g = `<rect x="0" y="0" width="${W}" height="${H}" fill="var(--surface)"/>`;
+
+  // espina central
+  g += `<line x1="${sx0}" y1="${sy}" x2="${sx1}" y2="${sy}"
+          stroke="var(--ink-2)" stroke-width="3"/>
+        <path d="M${sx1},${sy-9} L${sx1+16},${sy} L${sx1},${sy+9} Z" fill="var(--ink-2)"/>`;
+
+  // cabeza: el efecto
+  g += `<g class="hz" style="cursor:pointer">
+     <rect x="${sx1+22}" y="${sy-62}" width="218" height="124" rx="12"
+           fill="var(--beam)" opacity="0.14" stroke="var(--beam)" stroke-width="2.5"/>
+     <text x="${sx1+131}" y="${sy-32}" text-anchor="middle" font-family="var(--f-sans)"
+           font-size="12" font-weight="600" fill="var(--beam)">EFECTO</text>
+     <text x="${sx1+131}" y="${sy-6}" text-anchor="middle" font-family="var(--f-mono)"
+           font-size="24" font-weight="600" fill="var(--ink)">200 µm</text>
+     <text x="${sx1+131}" y="${sy+18}" text-anchor="middle" font-family="var(--f-sans)"
+           font-size="13" fill="var(--ink-2)">y el objetivo es</text>
+     <text x="${sx1+131}" y="${sy+44}" text-anchor="middle" font-family="var(--f-mono)"
+           font-size="24" font-weight="600" fill="var(--beam)">50 µm</text>
+   </g>`;
+
+  let iu=0, id=0;
+  FISH.forEach(b => {
+    const up = b.pos==="up";
+    const ax = ATT[up ? iu++ : id++];
+    const ox = ax-DX, oy = up ? sy-DY : sy+DY;
+
+    // hueso
+    g += `<line x1="${ox}" y1="${oy}" x2="${ax}" y2="${sy}"
+            stroke="var(--ink-3)" stroke-width="2.5"/>`;
+
+    // rotulo de la espina
+    const ly = up ? oy-30 : oy+8;
+    g += `<g class="bz" data-b="${b.k}" style="cursor:pointer">
+       <rect x="${ox-72}" y="${ly}" width="150" height="30" rx="8"
+             fill="var(--surface-3)" stroke="var(--ink-3)" stroke-width="1.5"/>
+       <text x="${ox+3}" y="${ly+20}" text-anchor="middle" font-family="var(--f-sans)"
+             font-size="14" font-weight="600" fill="var(--ink)">${b.nm}</text>
+     </g>`;
+
+    // causas sobre el hueso
+    const n = b.causes.length;
+    b.causes.forEach((c,j) => {
+      const t = 0.10 + 0.86*(n>1 ? j/(n-1) : 0.5);
+      const px = ox + (ax-ox)*t, py = oy + (sy-oy)*t;
+      const st = IK.st[`${b.k}-${j}`] || c.st;
+      const hasVal = !!IK.val[`${b.k}-${j}`];
+      g += `<g class="cz" data-b="${b.k}" data-c="${j}" style="cursor:pointer">
+         <rect x="${px-116}" y="${py-9}" width="124" height="18" fill="transparent"/>
+         <line x1="${px-11}" y1="${py}" x2="${px-3}" y2="${py}"
+               stroke="${COL[st]}" stroke-width="2"/>
+         <circle cx="${px-14}" cy="${py}" r="4.5" fill="${COL[st]}"/>
+         <text x="${px-22}" y="${py+4}" text-anchor="end" font-family="var(--f-sans)"
+               font-size="11" fill="var(--ink-2)">${c.s}${hasVal?" ✓":""}</text>
+       </g>`;
+    });
+  });
+
+  $("fish").innerHTML = g;
+}
+
+/* ════════ panel de detalle ════════ */
+const inp = (id, val, ph) =>
+  `<input type="text" class="pin" data-k="${id}" value="${(val||"").replace(/"/g,"&quot;")}"
+     placeholder="${ph}">`;
+
+function showBone(k){
+  const b = FISH.find(x=>x.k===k);
+  const objs = b.obj.split(" · ").map(o =>
+    `<li><b>${o}:</b> ${OBJDEF[o]||""}</li>`).join("");
+  const n = {ok:0,warn:0,bad:0};
+  b.causes.forEach((c,j) => n[IK.st[`${b.k}-${j}`]]++);
+  $("panel").innerHTML = `
+    <div class="ptitle"><span class="pkind">ESPINA</span><h3>${b.nm}</h3>
+      <span class="pcount">
+        <i style="background:var(--ok)"></i>${n.ok}
+        <i style="background:var(--warn)"></i>${n.warn}
+        <i style="background:var(--bad)"></i>${n.bad}</span></div>
+    <p><b>Qué es.</b> ${b.que}</p>
+    <p><b>Qué incluir acá.</b> ${b.incluir}</p>
+    <div class="pbox">
+      <span class="plbl">Objetivo del sistema en riesgo</span>
+      <p style="margin:6px 0 8px">${b.objWhy}</p>
+      <ul style="margin:0">${objs}</ul>
+    </div>
+    <div class="pbox kpi">
+      <span class="plbl">KPI de control de esta espina</span>
+      <p style="margin:6px 0 4px"><b>${b.kpi[0]}</b></p>
+      <p style="margin:0 0 10px;color:var(--ink-3);font-size:13px">${b.kpi[1]}</p>
+      <div class="pgrid2">
+        <label>Hoy ${inp(`kb.${b.k}`, IK.kb[b.k], "—")}</label>
+        <label>Meta ${inp(`km.${b.k}`, IK.km[b.k], "—")}</label>
+      </div>
+    </div>
+    <label class="pfull">Resultado SMART de esta espina
+      ${inp(`sm.${b.k}`, IK.sm[b.k], b.smartPh)}</label>`;
+}
+
+function showCause(k, j){
+  const b = FISH.find(x=>x.k===k), c = b.causes[j], id = `${k}-${j}`;
+  const st = IK.st[id];
+  $("panel").innerHTML = `
+    <div class="ptitle"><span class="pkind">CAUSA · ${b.nm}</span><h3>${c.t}</h3></div>
+    <div class="pbox">
+      <span class="plbl">¿Se puede controlar?</span>
+      <div class="pstates">
+        ${["ok","warn","bad"].map(s => `
+          <button type="button" class="pst ${s===st?"on":""}" data-st="${s}" data-id="${id}">
+            <i style="background:${COL[s]}"></i>${COLNM[s]}</button>`).join("")}
+      </div>
+    </div>
+    <div class="pgrid2">
+      <div class="pbox"><span class="plbl">Qué hay que medir o averiguar</span>
+        <p style="margin:6px 0 8px;font-size:13.5px">${c.med}</p>
+        ${inp(`val.${id}`, IK.val[id], "anotá el valor acá")}</div>
+      <div class="pbox"><span class="plbl">Contramedida</span>
+        <p style="margin:6px 0 0;font-size:13.5px">${c.cm}</p></div>
+    </div>
+    <p class="pfoot">Esta causa pesa sobre el KPI de <b>${b.nm}</b>:
+      ${b.kpi[0]}. <a href="#" class="plink" data-b="${k}">ver la espina completa</a></p>`;
+}
+
+function showHead(){
+  $("panel").innerHTML = `
+    <div class="ptitle"><span class="pkind">EFECTO — LA CABEZA DEL PESCADO</span>
+      <h3>El spot mide ~200 µm y el objetivo es 50 µm</h3></div>
+    <p>Todas las espinas convergen acá. Una causa importa en la medida en que mueve
+    este número — si no lo mueve, no va en este diagrama.</p>
+    <div class="pbox kpi">
+      <span class="plbl">El objetivo, en SMART</span>
+      <div class="tw"><table style="margin-top:6px"><tbody>
+        <tr><td style="width:150px"><b>S</b> Específico</td>
+            <td>Diámetro del spot del láser en el plano de la muestra</td></tr>
+        <tr><td><b>M</b> Medible</td>
+            <td>50 µm, por el método D² — no por mirar el cráter</td></tr>
+        <tr><td><b>A</b> Alcanzable</td>
+            <td>Requiere bajar el f/# cuatro veces: focal más corta, expansor u objetivo</td></tr>
+        <tr><td><b>R</b> Relevante</td>
+            <td>Fija la resolución del mapa <b>y</b> la irradiancia sobre la muestra</td></tr>
+        <tr><td><b>T</b> Con plazo</td>
+            <td>${inp("plazo", IK.plazo, "¿para cuándo? — completar")}</td></tr>
+      </tbody></table></div>
+    </div>`;
+}
+
+$("fish").addEventListener("click", e => {
+  const c = e.target.closest(".cz"), b = e.target.closest(".bz"), h = e.target.closest(".hz");
+  if (c) showCause(c.dataset.b, +c.dataset.c);
+  else if (b) showBone(b.dataset.b);
+  else if (h) showHead();
+});
+
+$("panel").addEventListener("click", e => {
+  const s = e.target.closest(".pst");
+  if (s){ IK.st[s.dataset.id] = s.dataset.st;
+    const [k,j] = s.dataset.id.split("-"); drawFish(); showCause(k, +j); save(); return; }
+  const l = e.target.closest(".plink");
+  if (l){ e.preventDefault(); showBone(l.dataset.b); }
+});
+
+$("panel").addEventListener("input", e => {
+  const el = e.target.closest(".pin"); if (!el) return;
+  const [grp, ...rest] = el.dataset.k.split(".");
+  if (grp === "plazo") IK.plazo = el.value; else IK[grp][rest.join(".")] = el.value;
+  if (grp === "val") drawFish();
+  save();
+});
+
+drawFish();
+
+/* ════════ lineas de base e indicadores ════════ */
+const BASE = [
+ ["Óptica","Diámetro del spot en el plano focal","µm","D² sobre testigo"],
+ ["Óptica","Profundidad de foco","µm","Se calcula del anterior"],
+ ["Óptica","Focal efectiva del tren de enfoque","mm","Hoja de datos o medición"],
+ ["Óptica","Diámetro del haz al llegar a la lente","mm","Regla o papel quemado"],
+ ["Láser","Energía por pulso en la muestra — mínima","mJ","Medidor en el plano"],
+ ["Láser","Energía por pulso en la muestra — máxima","mJ","Medidor en el plano"],
+ ["Láser","Estabilidad tiro a tiro","% RMS","20 disparos"],
+ ["Láser","Calidad del haz M²","—","Hoja de datos"],
+ ["Cámara","Escala de la micrografía","µm/px","Patrón calibrado"],
+ ["Platina","Repetibilidad de posicionamiento","µm","Ir y volver 10 veces"],
+ ["Platina","Recorrido útil XY y Z","mm","Hoja de datos"],
+ ["Espectrómetro","Resolución espectral por módulo","nm FWHM","Lámpara de línea"],
+ ["Espectrómetro","Rango espectral por módulo","nm","Hoja de datos"],
+ ["Espectrómetro","Piso de ruido por canal","cuentas σ","Del fondo (cal.rui)"]
+];
+$("tbl-base").innerHTML = `
+  <thead><tr><th>Instrumento</th><th>Qué se mide</th><th>Unidad</th><th>Cómo</th>
+    <th style="width:120px">Valor</th></tr></thead>
+  <tbody>${BASE.map(([ins,q,u,c],i) => `
+    <tr><td style="color:var(--ink-3);font-size:13px">${ins}</td><td>${q}</td>
+      <td class="n" style="color:var(--ink-3)">${u}</td>
+      <td style="font-size:13px;color:var(--ink-3)">${c}</td>
+      <td><input type="text" id="bl-${i}" placeholder="—"
+        style="font:400 13px var(--f-mono);background:var(--surface-2);color:var(--ink);
+        border:1px solid var(--line-2);border-radius:6px;padding:5px 8px;width:100%"></td>
+    </tr>`).join("")}</tbody>`;
+
+const KPIS = [
+ ["Resultado","Diámetro de spot logrado","µm","50","Resolución y calidad"],
+ ["Resultado","Irradiancia entregada","GW/cm²","> 1","Que haya plasma"],
+ ["Resultado","Puntos válidos por barrido","%","—","Calidad del mapa"],
+ ["Resultado","SNR de línea de referencia","—","—","Calidad"],
+ ["Resultado","Resolución espacial del mapa (paso)","µm","= spot","Resolución"],
+ ["Software","Barridos completados sin intervención","%","—","Transferible"],
+ ["Software","Timeouts de adquisición cada 100 puntos","—","0","Confiabilidad"],
+ ["Software","Tiempo por punto, y su dispersión","s","—","Previsibilidad"],
+ ["Software","Puntos con procedencia completa registrada","%","100","Trazable"],
+ ["Software","Cobertura requisito→test del WBS","%","—","Certificable"],
+ ["Proceso","Diferencia de spot entre dos operadores","%","< 10","Transferible"],
+ ["Proceso","Mediciones con incertidumbre declarada","%","100","Calidad"]
+];
+$("tbl-kpi").innerHTML = `
+  <thead><tr><th>Tipo</th><th>Indicador</th><th>Unidad</th>
+    <th style="width:105px">Hoy</th><th style="width:105px">Meta</th>
+    <th>Objetivo que sirve</th></tr></thead>
+  <tbody>${KPIS.map(([t,q,u,m,o],i) => `
+    <tr><td style="color:var(--ink-3);font-size:13px">${t}</td><td>${q}</td>
+      <td class="n" style="color:var(--ink-3)">${u}</td>
+      <td><input type="text" id="kh-${i}" placeholder="—"
+        style="font:400 13px var(--f-mono);background:var(--surface-2);color:var(--ink);
+        border:1px solid var(--line-2);border-radius:6px;padding:5px 8px;width:100%"></td>
+      <td><input type="text" id="kt-${i}" value="${m==="—"?"":m}" placeholder="—"
+        style="font:400 13px var(--f-mono);background:var(--surface-2);color:var(--ink);
+        border:1px solid var(--line-2);border-radius:6px;padding:5px 8px;width:100%"></td>
+      <td><span class="tag obj">${o}</span></td>
+    </tr>`).join("")}</tbody>`;
+
+/* ════════ checklist ════════ */
+const CHK = [
+ ["Focal y modelo de la lente de enfoque","Sin esto la calculadora es una estimación."],
+ ["Diámetro del haz al llegar a la lente","Es la otra mitad de la cuenta del spot."],
+ ["M² del láser (hoja de datos alcanza)","Pone el piso de lo alcanzable."],
+ ["Energía en el plano de la muestra, en el mínimo","Para saber si hay margen para bajar más."],
+ ["Marca, modelo y año del atenuador","Con eso busco el protocolo y escribo el driver."],
+ ["Marca y modelo del medidor de energía","Idem: si habla por serie, se automatiza."],
+ ["Foto del tren óptico completo","Para ver dónde entra un expansor o un objetivo."],
+ ["Micrografía de un cráter, con la escala","Primera medición real del spot."],
+ ["¿Cuánto tarda hoy un barrido completo?","A 50 µm serán 16× más puntos."]
+];
+$("chk").innerHTML = CHK.map((c,i) => `
+  <label><input type="checkbox" id="ck-${i}">
+    <span>${c[0]}<span class="why">${c[1]}</span></span></label>`).join("");
+
+/* ════════ persistencia ════════ */
+const KEY = "microlibs_spot_v2";
+const TEXTSEL = '[id^="bl-"], [id^="kh-"], [id^="kt-"]';
+function save(){
+  try{
+    const d = {_ik: IK};
+    F.forEach(id => d[id] = $(id).value);
+    document.querySelectorAll(TEXTSEL).forEach(el => d[el.id] = el.value);
+    document.querySelectorAll('[id^="ck-"]').forEach(el => d[el.id] = el.checked);
+    localStorage.setItem(KEY, JSON.stringify(d));
+  }catch(e){}
+}
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(KEY) || "{}");
+    if (d._ik) ["st","val","sm","kb","km"].forEach(g => Object.assign(IK[g], d._ik[g]||{}));
+    if (d._ik && d._ik.plazo) IK.plazo = d._ik.plazo;
+    Object.keys(d).forEach(k => {
+      if (k === "_ik") return;
+      const el = $(k); if (!el) return;
+      if (el.type === "checkbox") el.checked = !!d[k]; else el.value = d[k];
+    });
+  }catch(e){}
+}
+load();
+drawFish();
+
+/* ════════ eventos ════════ */
+F.forEach(id => $(id).addEventListener("input", render));
+document.querySelectorAll(".presets button").forEach(b => {
+  b.addEventListener("click", () => {
+    const p = PRESETS[b.dataset.p];
+    Object.keys(p).forEach(k => $(k).value = p[k]);
+    render();
+    $("verdict").insertAdjacentHTML("beforeend",
+      `<p style="font-size:13px;color:var(--ink-3);margin-top:8px">${PRESET_NOTE[b.dataset.p]}</p>`);
+  });
+});
+document.addEventListener("input", e => {
+  if (e.target.matches(TEXTSEL + ', [id^="ck-"]')) save();
+});
+
+$("btn-export").addEventListener("click", () => {
+  const r = physics();
+  let t = "TALLER DEL SPOT — microLIBS\n" + new Date().toLocaleString("es-AR") + "\n";
+  t += "\n== ÓPTICA ==\n";
+  t += `focal ${$("f").value} mm · haz entrante ${$("D").value} mm · M² ${$("M2").value}\n`;
+  t += `lambda ${$("lam").value} nm · energía ${$("E").value} mJ · pulso ${$("tau").value} ns\n`;
+  if (r) t += `-> spot ${fmt(r.d0,0)} µm · prof. foco ${fmt(r.dof,3)} mm · ` +
+              `fluencia ${fmt(r.flu,1)} J/cm² · irradiancia ${fmt(r.irr,1)} GW/cm² · f/${fmt(r.fnum,1)}\n`;
+  t += `\n== OBJETIVO (SMART) ==\n  spot de 50 µm en el plano de la muestra, medido por D²\n`;
+  t += `  plazo: ${IK.plazo || "SIN DEFINIR"}\n`;
+  FISH.forEach(b => {
+    t += `\n== ${b.nm.toUpperCase()}  [objetivo en riesgo: ${b.obj}] ==\n`;
+    b.causes.forEach((c,j) => {
+      const id = `${b.k}-${j}`, st = IK.st[id], v = IK.val[id];
+      t += `  [${COLNM[st].toUpperCase().padEnd(11)}] ${c.t}${v ? " :: " + v : ""}\n`;
+    });
+    t += `  KPI: ${b.kpi[0]} — hoy ${IK.kb[b.k]||"?"} / meta ${IK.km[b.k]||"?"}\n`;
+    t += `  SMART: ${IK.sm[b.k] || "SIN DEFINIR"}\n`;
+  });
+  const crit = [];
+  FISH.forEach(b => b.causes.forEach((c,j) => {
+    if (IK.st[`${b.k}-${j}`] === "bad") crit.push(`  - [${b.nm}] ${c.t}`); }));
+  if (crit.length) t += `\n== CRITICAS, SIN CONTROL (${crit.length}) ==\n` + crit.join("\n") + "\n";
+
+  const bl = BASE.map((b,i) => {
+    const v = ($(`bl-${i}`)||{}).value;
+    return v ? `  - ${b[0]} · ${b[1]}: ${v} ${b[2]}` : null;
+  }).filter(Boolean);
+  if (bl.length) t += "\n== LINEAS DE BASE MEDIDAS ==\n" + bl.join("\n") + "\n";
+  const blFalta = BASE.map((b,i) => ($(`bl-${i}`)||{}).value ? null : `  [ ] ${b[1]}`)
+                      .filter(Boolean);
+  if (blFalta.length) t += "\n== LINEAS DE BASE SIN MEDIR ==\n" + blFalta.join("\n") + "\n";
+
+  const kp = KPIS.map((k,i) => {
+    const h = ($(`kh-${i}`)||{}).value, m = ($(`kt-${i}`)||{}).value;
+    return (h || m) ? `  - ${k[1]} [${k[2]}]: hoy ${h||"?"} / meta ${m||"?"}  (${k[4]})` : null;
+  }).filter(Boolean);
+  if (kp.length) t += "\n== KPIs ==\n" + kp.join("\n") + "\n";
+  const pend = CHK.map((c,i) => $(`ck-${i}`).checked ? null : `  [ ] ${c[0]}`).filter(Boolean);
+  if (pend.length) t += "\n== FALTA TRAER ==\n" + pend.join("\n") + "\n";
+  const d = $("dump"); d.value = t; d.hidden = false; d.scrollIntoView({block:"nearest"});
+});
+
+$("btn-copy").addEventListener("click", async () => {
+  const d = $("dump");
+  if (d.hidden) $("btn-export").click();
+  try{
+    await navigator.clipboard.writeText(d.value);
+    $("msg").textContent = "Copiado.";
+  }catch(e){
+    d.focus(); d.select();
+    $("msg").textContent = "Seleccionado — copiá con Ctrl+C.";
+  }
+  setTimeout(() => $("msg").textContent = "", 3500);
+});
+
+$("btn-clear").addEventListener("click", () => {
+  document.querySelectorAll(TEXTSEL).forEach(el => el.value = "");
+  document.querySelectorAll('[id^="ck-"]').forEach(el => el.checked = false);
+  ["val","sm","kb","km"].forEach(g => IK[g] = {});
+  IK.plazo = "";
+  FISH.forEach(b => b.causes.forEach((c,j) => IK.st[`${b.k}-${j}`] = c.st));
+  drawFish();
+  $("panel").innerHTML = `<p class="panel-empty">Hacé clic en una espina, en una causa,
+    o en la cabeza del pescado.</p>`;
+  $("dump").hidden = true;
+  save();
+  $("msg").textContent = "Listo, vacío.";
+  setTimeout(() => $("msg").textContent = "", 3000);
+});
+
+render();
+</script>
+</body>
+</html>

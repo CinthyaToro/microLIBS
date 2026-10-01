@@ -1,0 +1,178 @@
+<title>Por qué te llegó código</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#FBF9F6; --surface:#FFFFFF; --surface-2:#F3EFE9;
+    --ink:#1C1A17; --ink-2:#4A443C; --ink-3:#847A6C;
+    --line:#E3DCD2; --line-2:#CFC5B8;
+    --beam:#B4530A; --beam-soft:#B4530A14; --beam-line:#B4530A33;
+    --ok:#12795B; --ok-soft:#12795B14;
+    --f-sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+    --f-serif:"IBM Plex Serif",Georgia,serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg:#14120F; --surface:#1C1916; --surface-2:#241F1A;
+      --ink:#EFE9E1; --ink-2:#C0B7AA; --ink-3:#8D8375;
+      --line:#2E2822; --line-2:#3E362E;
+      --beam:#E8963F; --beam-soft:#E8963F1A; --beam-line:#E8963F40;
+      --ok:#4FC79E; --ok-soft:#4FC79E1A;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg:#14120F; --surface:#1C1916; --surface-2:#241F1A;
+    --ink:#EFE9E1; --ink-2:#C0B7AA; --ink-3:#8D8375;
+    --line:#2E2822; --line-2:#3E362E;
+    --beam:#E8963F; --beam-soft:#E8963F1A; --beam-line:#E8963F40;
+    --ok:#4FC79E; --ok-soft:#4FC79E1A;
+  }
+
+  body{background:var(--bg); color:var(--ink); font-family:var(--f-sans);
+       font-size:16px; line-height:1.62; margin:0}
+  .wrap{max-width:720px; margin:0 auto; padding-inline:20px; padding-block:48px 72px}
+
+  .eyebrow{font-family:var(--f-mono); font-size:11.5px; letter-spacing:.14em;
+           text-transform:uppercase; color:var(--ink-3); margin:0 0 14px}
+  h1{font-family:var(--f-serif); font-size:clamp(30px,6vw,44px); line-height:1.14;
+     margin:0 0 16px; text-wrap:balance; letter-spacing:-.01em}
+  .lede{font-size:18px; color:var(--ink-2); margin:0 0 8px; text-wrap:balance}
+
+  h2{font-family:var(--f-serif); font-size:23px; line-height:1.25; margin:0 0 6px;
+     text-wrap:balance}
+  h3{font-size:16px; margin:0 0 4px; font-weight:600}
+  p{margin:0 0 14px}
+  section{margin-top:52px}
+  .sub{color:var(--ink-2); margin:0 0 22px}
+
+  hr{border:0; border-top:1px solid var(--line); margin:0}
+
+  /* ── tarjetas de link ── */
+  .links{display:flex; flex-direction:column; gap:12px; margin:0 0 6px}
+  a.doc{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+        background:var(--surface); border:1px solid var(--line-2);
+        border-left:3px solid var(--beam); border-radius:10px;
+        padding:16px 18px; text-decoration:none; color:inherit;
+        transition:border-color .15s, transform .15s}
+  a.doc:hover{border-color:var(--beam); transform:translateX(2px)}
+  a.doc:focus-visible{outline:2px solid var(--beam); outline-offset:2px}
+  a.doc .nm{font-weight:600; font-size:17px; color:var(--beam)}
+  a.doc .ds{color:var(--ink-2); font-size:14.5px; flex:1 1 220px}
+
+  /* ── formas de abrir ── */
+  .ways{display:flex; flex-direction:column; gap:14px}
+  .way{background:var(--surface); border:1px solid var(--line);
+       border-radius:10px; padding:16px 18px}
+  .way.best{border-color:var(--ok); background:var(--ok-soft)}
+  .way .tag{display:inline-block; font-family:var(--f-mono); font-size:10.5px;
+            letter-spacing:.1em; text-transform:uppercase; color:var(--ok);
+            border:1px solid var(--ok); border-radius:999px;
+            padding:2px 8px; margin-bottom:8px}
+  .way p{margin:0; color:var(--ink-2); font-size:15px}
+  .way p + p{margin-top:8px}
+  kbd{font-family:var(--f-mono); font-size:13px; background:var(--surface-2);
+      border:1px solid var(--line-2); border-bottom-width:2px; border-radius:5px;
+      padding:1px 6px; color:var(--ink); white-space:nowrap}
+  code{font-family:var(--f-mono); font-size:13.5px; background:var(--surface-2);
+       border-radius:4px; padding:1px 5px}
+
+  .note{border-left:3px solid var(--beam); background:var(--beam-soft);
+        border-radius:0 8px 8px 0; padding:14px 16px; margin:22px 0}
+  .note p{margin:0; font-size:15px}
+  .note p + p{margin-top:9px}
+  .note b{color:var(--beam)}
+
+  footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--line);
+         color:var(--ink-3); font-size:13.5px}
+  footer p{margin:0 0 4px}
+  @media (max-width:430px){ .wrap{padding-block:34px 56px} }
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">microLIBS · CITEDEF</p>
+  <h1>Por qué te llegó código</h1>
+  <p class="lede">Si abriste lo que te mandé y viste un muro de texto raro que empieza con
+  <code>&lt;style&gt;</code>, no está roto y no te mandé el archivo equivocado. Se abrió con
+  el programa equivocado.</p>
+  <p class="lede">Abajo están los links, que es la forma de no pasar por nada de esto.</p>
+
+  <section>
+    <h2>Los links</h2>
+    <p class="sub">No hay que descargar ni abrir nada. Andan en la compu y en el celular.</p>
+    <div class="links">
+      <a class="doc" href="https://claude.ai/artifact/8eEG1bDYpqWProWaoPCoaa">
+        <span class="nm">Taller del spot ↗</span>
+        <span class="ds">Cuánto se puede achicar el spot con cada lente y expansor, cómo
+        medirlo, y el Ishikawa de por qué hoy mide 200 µm.</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Si igual tenés el archivo suelto</h2>
+    <p class="sub">Un archivo <code>.html</code> es una página web guardada en el disco. Lo
+    tiene que abrir un <b>navegador</b> — Chrome, Edge, Firefox. Cualquier otro programa te
+    va a mostrar el código, que es exactamente lo que pasó.</p>
+
+    <div class="ways">
+      <div class="way best">
+        <span class="tag">la que nunca falla</span>
+        <h3>Arrastrar el archivo adentro del navegador</h3>
+        <p>Abrí Chrome o Edge en una ventana cualquiera. Agarrá el archivo y soltalo encima
+        de la ventana. Listo.</p>
+        <p>Funciona siempre, sin importar cómo esté configurada la máquina, porque le estás
+        diciendo al navegador que lo abra en vez de dejar que Windows decida.</p>
+      </div>
+
+      <div class="way">
+        <h3>Clic derecho → Abrir con</h3>
+        <p>Clic derecho sobre el archivo → <b>Abrir con</b> → elegí Chrome, Edge o Firefox.
+        Si el navegador no aparece en la lista, entrá en <b>Elegir otra aplicación</b> y
+        buscalo ahí.</p>
+        <p>Si además tildás <b>Usar siempre esta aplicación</b>, queda arreglado para todos
+        los <code>.html</code> de ahí en adelante y el doble clic empieza a funcionar.</p>
+      </div>
+
+      <div class="way">
+        <h3>Doble clic</h3>
+        <p>Es lo que debería andar, y en muchas máquinas anda. Si te mostró código, es que
+        tu Windows tiene los <code>.html</code> asociados a un editor de texto. Usá
+        cualquiera de las dos de arriba.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><b>Ojo con abrirlo desde el mail.</b> Algunos clientes de correo muestran el
+      contenido del adjunto en vez de bajarlo. <b>Guardá el archivo primero</b>
+      (<kbd>Descargar</kbd>, no «Ver»), y recién después abrilo con alguna de las tres
+      formas.</p>
+      <p>Y si te llegó por WhatsApp Web, bajalo a la carpeta de Descargas antes de tocarlo.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Qué tienen estas páginas</h2>
+    <p class="sub">No son documentos para leer y listo.</p>
+    <p>Tienen <b>calculadoras</b>: cambiás la focal de una lente o el diámetro del haz y los
+    números se recalculan solos. Tienen <b>campos para completar</b> con lo que midas en el
+    laboratorio, y lo que escribas <b>queda guardado en tu navegador</b> — podés cerrar la
+    página y volver después.</p>
+    <p>Por eso van como página y no como PDF: un PDF no calcula nada.</p>
+    <div class="note">
+      <p><b>Lo que cargues es tuyo y no viaja.</b> Queda en tu navegador, en tu máquina. Si
+      lo abrís en otra compu no vas a ver lo que cargaste en la primera, y yo tampoco lo veo.
+      Para compartir lo que anotaste está el botón <b>Ver todo como texto</b>, que arma un
+      resumen para copiar y pegar.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>microLIBS · 25-sep-2026</p>
+    <p>Si algo no abre, escribime y lo vemos — no pierdas tiempo peleándole.</p>
+  </footer>
+
+</div>

@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  html{color-scheme:light}
+  body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+
+<title>Globitos de microLIBS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --ground:#F4F6F9; --surface:#FFFFFF; --surface-2:#EDF0F5;
+    --ink:#13161F; --ink-2:#414859; --ink-3:#6C7488;
+    --line:#DCE1EA; --line-2:#C6CDDA;
+    --accent:#4B45C6;
+    --ok:#12795B; --ok-bg:#12795B14;
+    --warn:#9A6205; --warn-bg:#9A620514;
+    --none:#6C7488; --none-bg:#6C748814;
+    --lum:42%; --sat:55%; --tint:0.09; --tint-2:0.16;
+    --r:10px;
+    --f-serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+    --f-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --ground:#0E1117; --surface:#161A23; --surface-2:#1E2430;
+      --ink:#EAEDF4; --ink-2:#AFB7C7; --ink-3:#7D8698;
+      --line:#262D3A; --line-2:#333C4C;
+      --accent:#9A95F5;
+      --ok:#4FC79E; --ok-bg:#4FC79E1A;
+      --warn:#E0A548; --warn-bg:#E0A5481A;
+      --none:#7D8698; --none-bg:#7D86981A;
+      --lum:64%; --sat:58%; --tint:0.14; --tint-2:0.22;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --ground:#0E1117; --surface:#161A23; --surface-2:#1E2430;
+    --ink:#EAEDF4; --ink-2:#AFB7C7; --ink-3:#7D8698;
+    --line:#262D3A; --line-2:#333C4C;
+    --accent:#9A95F5;
+    --ok:#4FC79E; --ok-bg:#4FC79E1A;
+    --warn:#E0A548; --warn-bg:#E0A5481A;
+    --none:#7D8698; --none-bg:#7D86981A;
+    --lum:64%; --sat:58%; --tint:0.14; --tint-2:0.22;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:var(--f-sans); font-size:15px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px; margin:0 auto; padding-inline:16px; padding-block:0 64px}
+
+  /* ── Encabezado ───────────────────────────────────── */
+  header{padding-block:40px 28px; border-bottom:1px solid var(--line)}
+  .eyebrow{
+    font-family:var(--f-mono); font-size:11px; font-weight:500;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3);
+    margin:0 0 10px;
+  }
+  h1{
+    font-family:var(--f-serif); font-weight:600; font-size:clamp(28px,5.2vw,42px);
+    line-height:1.12; letter-spacing:-.01em; margin:0 0 12px; text-wrap:balance;
+  }
+  .lede{font-size:17px; color:var(--ink-2); margin:0; max-width:62ch}
+  .meta{
+    display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:18px;
+    font-family:var(--f-mono); font-size:12px; color:var(--ink-3);
+  }
+
+  /* ── Bloques didácticos ───────────────────────────── */
+  .primer{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); padding:20px 22px; margin-top:28px;
+  }
+  .primer h2{
+    font-family:var(--f-sans); font-size:13px; font-weight:600;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3);
+    margin:0 0 12px;
+  }
+  .primer p{margin:0 0 10px; color:var(--ink-2)}
+  .primer p:last-child{margin-bottom:0}
+  .primer b{color:var(--ink); font-weight:600}
+  code, .mono{font-family:var(--f-mono); font-size:.92em}
+  .primer code{
+    background:var(--surface-2); padding:1px 5px; border-radius:4px; color:var(--ink);
+  }
+
+  /* ── Resumen numérico ─────────────────────────────── */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-top:20px}
+  .stat{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); padding:14px 16px;
+  }
+  .stat .n{
+    font-family:var(--f-mono); font-size:26px; font-weight:600;
+    font-variant-numeric:tabular-nums; line-height:1.1; display:block;
+  }
+  .stat .l{font-size:12.5px; color:var(--ink-3); margin-top:4px; display:block}
+  .stat.ok .n{color:var(--ok)} .stat.warn .n{color:var(--warn)} .stat.none .n{color:var(--ink-2)}
+
+  /* ── Leyenda ──────────────────────────────────────── */
+  .legend{
+    display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:20px;
+    font-size:12.5px; color:var(--ink-3); align-items:center;
+  }
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--f-mono); font-size:11px; font-weight:500;
+    padding:3px 8px; border-radius:999px; white-space:nowrap;
+  }
+  .chip.ok{color:var(--ok); background:var(--ok-bg)}
+  .chip.warn{color:var(--warn); background:var(--warn-bg)}
+  .chip.none{color:var(--none); background:var(--none-bg)}
+  .chip.new{color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,transparent)}
+  .chip.lab{color:var(--ink-2); background:var(--surface-2)}
+
+  /* ── Secciones ────────────────────────────────────── */
+  section{margin-top:44px}
+  .sec-head{margin-bottom:16px}
+  .sec-head h2{
+    font-family:var(--f-serif); font-size:24px; font-weight:600;
+    margin:0 0 6px; letter-spacing:-.005em;
+  }
+  .sec-head p{margin:0; color:var(--ink-2); max-width:64ch}
+
+  /* ── Rama (nivel 1) ───────────────────────────────── */
+  .branch{
+    background:var(--surface); border:1px solid var(--line);
+    border-left:4px solid hsl(var(--h) var(--sat) var(--lum));
+    border-radius:var(--r); margin-bottom:10px; overflow:hidden;
+  }
+  .bhead{
+    width:100%; display:flex; align-items:flex-start; gap:14px;
+    background:none; border:0; text-align:left; cursor:pointer;
+    padding:16px 18px; font:inherit; color:inherit;
+  }
+  .bhead:hover{background:hsl(var(--h) var(--sat) var(--lum) / var(--tint))}
+  .bhead:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+  .code{
+    font-family:var(--f-mono); font-weight:600; font-size:13px;
+    padding:3px 9px; border-radius:6px; white-space:nowrap; flex:none;
+    color:hsl(var(--h) var(--sat) var(--lum));
+    background:hsl(var(--h) var(--sat) var(--lum) / var(--tint-2));
+  }
+  .btitles{flex:1; min-width:0}
+  .btitles .nm{font-weight:600; font-size:17px; display:block; line-height:1.3}
+  .btitles .qu{color:var(--ink-2); font-size:14px; margin-top:3px; display:block}
+  .bmeta{display:flex; align-items:center; gap:10px; flex:none; padding-top:3px}
+  .count{
+    font-family:var(--f-mono); font-size:11.5px; color:var(--ink-3);
+    font-variant-numeric:tabular-nums; white-space:nowrap;
+  }
+  .caret{
+    width:9px; height:9px; border-right:2px solid var(--ink-3);
+    border-bottom:2px solid var(--ink-3); transform:rotate(45deg);
+    transition:transform .18s ease; margin-top:-4px; flex:none;
+  }
+  [aria-expanded="true"] .caret{transform:rotate(-135deg); margin-top:2px}
+
+  .bbody{padding:0 18px 16px; border-top:1px solid var(--line)}
+  .bcomo{
+    font-size:13.5px; color:var(--ink-2); padding:12px 0 4px;
+    border-bottom:1px dashed var(--line); margin-bottom:8px;
+  }
+  .bcomo b{color:var(--ink-3); font-weight:600; font-size:11px;
+    letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:3px}
+
+  /* ── Hoja (nivel 2/3) ─────────────────────────────── */
+  .leaf{border-bottom:1px solid var(--line)}
+  .leaf:last-child{border-bottom:0}
+  .lhead{
+    width:100%; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    background:none; border:0; text-align:left; cursor:pointer;
+    padding:11px 4px; font:inherit; color:inherit;
+  }
+  .lhead:hover{background:hsl(var(--h) var(--sat) var(--lum) / .06)}
+  .lhead:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+  .lcode{
+    font-family:var(--f-mono); font-size:12.5px; font-weight:500;
+    color:hsl(var(--h) var(--sat) var(--lum)); flex:none;
+    min-width:88px;
+  }
+  .lnm{flex:1; min-width:140px; font-size:14.5px}
+  .dot{width:7px; height:7px; border-radius:50%; flex:none}
+  .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.none{background:var(--line-2)}
+
+  /* ── Ficha ────────────────────────────────────────── */
+  .ficha{
+    background:var(--surface-2); border-radius:8px;
+    padding:14px 16px; margin:2px 0 12px;
+    border-left:3px solid hsl(var(--h) var(--sat) var(--lum) / .5);
+  }
+  .ruta{
+    font-family:var(--f-mono); font-size:11.5px; color:var(--ink-3);
+    margin-bottom:12px; word-break:break-word;
+  }
+  .ruta b{color:hsl(var(--h) var(--sat) var(--lum)); font-weight:600}
+  .row{display:grid; grid-template-columns:104px 1fr; gap:10px 14px; margin-bottom:9px; align-items:start}
+  .row:last-child{margin-bottom:0}
+  .row dt{
+    font-size:10.5px; font-weight:600; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink-3); padding-top:2px;
+  }
+  .row dd{margin:0; font-size:14px; color:var(--ink)}
+  .row dd.soft{color:var(--ink-2)}
+  .row dd .mono{
+    background:var(--surface); padding:1px 5px; border-radius:4px;
+    border:1px solid var(--line); font-size:12px; display:inline-block;
+    margin:1px 0; word-break:break-all;
+  }
+  @media (max-width:560px){
+    .row{grid-template-columns:1fr; gap:2px}
+    .row dt{padding-top:6px}
+    .lcode{min-width:0}
+  }
+
+  /* ── Glosario ─────────────────────────────────────── */
+  .gloss{display:grid; gap:0; background:var(--surface);
+    border:1px solid var(--line); border-radius:var(--r); overflow:hidden}
+  .term{display:grid; grid-template-columns:160px 1fr; gap:16px;
+    padding:13px 18px; border-bottom:1px solid var(--line)}
+  .term:last-child{border-bottom:0}
+  .term dt{font-weight:600; font-size:14.5px}
+  .term dt .u{display:block; font-family:var(--f-mono); font-size:11px;
+    color:var(--ink-3); font-weight:400; margin-top:2px}
+  .term dd{margin:0; color:var(--ink-2); font-size:14px}
+  @media (max-width:620px){
+    .term{grid-template-columns:1fr; gap:4px}
+  }
+
+  /* ── Links ────────────────────────────────────────── */
+  .links{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:10px}
+  .lk{
+    display:block; background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); padding:14px 16px; text-decoration:none; color:inherit;
+  }
+  .lk:hover{border-color:var(--accent)}
+  .lk:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .lk .t{font-weight:600; font-size:14.5px; display:block}
+  .lk .d{color:var(--ink-3); font-size:12.5px; margin-top:3px; display:block}
+  .lk .t::after{content:" ↗"; color:var(--ink-3); font-weight:400}
+
+  footer{
+    margin-top:48px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12.5px; color:var(--ink-3);
+  }
+  footer p{margin:0 0 6px}
+  .note{
+    background:var(--warn-bg); border:1px solid color-mix(in srgb,var(--warn) 28%,transparent);
+    border-radius:8px; padding:12px 14px; font-size:13px; color:var(--ink-2); margin-top:16px;
+  }
+  .note b{color:var(--ink)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">CITEDEF · Diccionario WBS v3</p>
+  <h1>Los globitos de microLIBS</h1>
+  <p class="lede">El sistema completo, desarmado en 44 tareas verificables. Cada globito dice
+  <b>qué</b> tiene que lograr, <b>cómo</b> se hace y <b>en qué estado está hoy</b>.
+  Hacé clic en cualquiera para abrirlo.</p>
+  <div class="meta">
+    <span>23 · sep · 2026</span>
+    <span>8 ramas · 44 hojas</span>
+    <span>niveles 0–3</span>
+  </div>
+</header>
+
+<div class="primer">
+  <h2>Cómo leer esto</h2>
+  <p><b>Un «globito» es una tarea del sistema.</b> Tiene un código de tres letras
+  (<code>brd</code> = barrer) y los hijos cuelgan con un punto: <code>brd.adq</code> es
+  «adquirir espectro», hijo de «barrer». Es la convención del proyecto.</p>
+  <p><b>El árbol baja hasta que cada hoja se puede testear.</b> Esa es la regla de corte:
+  un globito deja de dividirse cuando su criterio de aceptación se puede escribir como una
+  prueba que pasa o falla. Por eso cada ficha tiene un renglón «criterio»: no es una
+  descripción, es lo que hay que verificar.</p>
+  <p><b>Los colores no son decoración.</b> Las ocho ramas están ordenadas como el espectro
+  que mide el instrumento: del violeta (preparar) al rojo profundo (cerrar). El orden de los
+  colores es el orden en que ocurren las cosas.</p>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="legend">
+  <span class="chip ok">■ implementado</span>
+  <span class="chip warn">■ parcial</span>
+  <span class="chip none">■ no existe</span>
+  <span class="chip new">nuevo en v3</span>
+  <span class="chip lab">[lab] necesita hardware</span>
+</div>
+
+<section>
+  <div class="sec-head">
+    <h2>El árbol</h2>
+    <p>Ocho ramas, en el orden en que ocurren durante una sesión de medición.
+    Abrí una rama para ver sus tareas; abrí una tarea para ver su ficha completa.</p>
+  </div>
+  <div id="tree"></div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Glosario</h2>
+    <p>Los términos que aparecen en las fichas, explicados sin dar por sabido nada.</p>
+  </div>
+  <dl class="gloss" id="gloss"></dl>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Para profundizar</h2>
+    <p>Lecturas de fondo para quien quiera entender la física o el método detrás del sistema.
+    Las de Wikipedia están en inglés, que es donde los artículos son más completos.</p>
+  </div>
+  <div class="links" id="links"></div>
+</section>
+
+<footer>
+  <p>microLIBS · Diccionario WBS v3 · 23-sep-2026 · Cinthya Toro, CITEDEF</p>
+  <p>Continúa el diccionario v2 (30-may-2026), que se conserva como referencia histórica.
+  Estado de cada globito <b>medido sobre el código</b>, no planificado.</p>
+</footer>
+
+</div>
+
+<script>
+const BRANCHES = [
+ {c:"ses",h:268,nm:"Preparar sesión",
+  qu:"Dejar lista la identidad y la persistencia del experimento",
+  co:"Un módulo de Sesión en la capa de orquestación, fuera de la interfaz gráfica.",
+  L:[
+   {c:"ses.dir",nm:"Árbol de directorios",e:"ok",
+    qu:"Que todo lo que produzca la sesión tenga dónde ir",
+    co:"Se crean las carpetas de imágenes, espectros y metadatos al abrir la sesión.",
+    cr:"Los directorios existen y son escribibles antes del primer dato.",
+    dd:"application/session_manager.py",t:"Falta"},
+   {c:"ses.idn",nm:"Identidad de la sesión",e:"ok",
+    qu:"Que cada sesión se pueda identificar después",
+    co:"Un archivo session.json con los datos de la corrida.",
+    cr:"Registra quién, cuándo y con qué versión del sistema se midió.",
+    dd:"application/session_manager.py",t:"Falta"},
+   {c:"ses.cfg",nm:"Configuración efectiva",e:"warn",
+    qu:"Que ningún parámetro del experimento quede implícito",
+    co:"Se resuelve la configuración combinando los valores por defecto, el archivo de la sesión y las rutas propias de cada computadora; el resultado se guarda con la sesión.",
+    cr:"Ningún parámetro queda sin declarar, y la configuración efectiva se persiste junto a los datos.",
+    dd:"config/*.yaml — falta el archivo de rutas locales",t:"Falta"}]},
+
+ {c:"cnx",h:232,nm:"Conectar instrumentos",
+  qu:"Dejar los instrumentos operables, hablándoles por capacidad y no por marca",
+  co:"Se declaran las capacidades, se registran los controladores por rol y se conecta cada equipo.",
+  L:[
+   {c:"cnx.hal",nm:"Definir capacidades",e:"ok",
+    qu:"Describir qué SABE hacer cada equipo, sin nombrar marcas",
+    co:"Interfaces por capacidad: mover en 2D, mover en Z, disparar, adquirir, tomar imagen, enfocar.",
+    cr:"Un controlador que no implementa su capacidad no se puede ni construir: falla al crearlo, no en silencio al usarlo.",
+    dd:"hal/base_*.py · hal/factory.py",t:"Cubierto"},
+   {c:"cnx.reg",nm:"Registrar por rol",e:"warn",
+    qu:"Pedir los instrumentos por el papel que cumplen, no por su marca",
+    co:"Un bus que resuelve nombres como «platina principal» o «láser LIBS» y devuelve el equipo que corresponda.",
+    cr:"Se piden por rol, nunca por marca ni por nombre de clase.",
+    dd:"hal/factory.py — hoy despacha por nombre, no hay bus por rol",t:"Falta"},
+   {c:"cnx.stg",nm:"Conectar la platina",e:"ok",
+    qu:"Dejar operable el posicionador de la muestra",
+    co:"El controlador se conecta y declara qué ejes tiene disponibles.",
+    cr:"Queda operable y declara sus ejes; si se le pide un eje que no tiene, falla de forma clara.",
+    dd:"hal/drivers/thorlabs_stage.py · movi_stage.py",t:"Falta"},
+   {c:"cnx.cam",nm:"Conectar la cámara",e:"ok",
+    qu:"Dejar la cámara operable y con vista previa",
+    co:"Se conecta y se le aplica el mapa de píxeles defectuosos como primer paso del procesamiento.",
+    cr:"La corrección de defectos se aplica antes que cualquier otra operación sobre la imagen.",
+    dd:"hal/drivers/chameleon_camera.py · hal/defect_correction.py",t:"Cubierto"},
+   {c:"cnx.las",nm:"Conectar el láser",e:"ok",
+    qu:"Dejar el láser operable y en estado seguro",
+    co:"Un cliente habla por red con un servidor que controla el láser; el detalle técnico queda escondido tras la misma interfaz que usan los demás equipos.",
+    cr:"Queda operable; quien lo usa no necesita saber cómo está implementado por dentro.",
+    dd:"hal/drivers/laser_proxy.py",t:"Falta"},
+   {c:"cnx.esp",nm:"Conectar el espectrómetro",e:"warn",
+    qu:"Dejar el espectrómetro listo para adquirir",
+    co:"Se conectan los módulos y se los pone en el modo de disparo por señal externa.",
+    cr:"Los módulos se declaran por número de serie, nunca por posición en una lista.",
+    dd:"hal/drivers/ocean_spectrometer.py",t:"Falta"},
+   {c:"cnx.lnz",nm:"Levantar el servidor del láser",e:"none",n:1,
+    qu:"Que nadie tenga que acordarse de arrancar un programa aparte antes de empezar",
+    co:"Si el láser real está pedido y su servidor no responde, el sistema lo lanza solo.",
+    cr:"Si no se puede lanzar, el sistema SE PLANTA Y AVISA. Nunca sigue como si nada.",
+    dd:"hoy no existe — la degradación silenciosa está en main.py:144-155",t:"Falta"}]},
+
+ {c:"cal",h:199,nm:"Calibrar la plataforma",
+  qu:"Medir todo lo que hay que saber del montaje y que NO depende de la muestra",
+  co:"Se caracteriza el equipo y se deja un «perfil de plataforma» con su procedencia: cuándo se midió y con qué.",
+  L:[
+   {c:"cal.geo",nm:"Calibración píxel ↔ milímetro",e:"warn",
+    qu:"Que un punto marcado en la foto se corresponda con un lugar real de la muestra",
+    co:"Se marcan puntos de referencia y se calcula la transformación que lleva de píxeles de la micrografía a milímetros de la platina.",
+    cr:"Un punto marcado en la micrografía se alcanza con la platina dentro de la tolerancia.",
+    dd:"service/calibration_service.py:170 — la transformación afín funciona; la homografía se guarda pero no se usa",t:"Cubierto (43 pruebas)"},
+   {c:"cal.env",nm:"Envolvente de seguridad",e:"warn",
+    qu:"Que la platina nunca intente ir a donde no puede",
+    co:"Se miden los límites de recorrido y se guardan en el perfil.",
+    cr:"Ningún punto fuera del recorrido declarado llega al hardware.",
+    dd:"platform_profile.py — por auditar",t:"Falta"},
+   {c:"cal.cap",nm:"Capacidades del setup",e:"ok",
+    qu:"Dejar registrado qué puede hacer ESTE montaje en particular",
+    co:"El perfil anota qué ejes hay disponibles y quién los provee.",
+    cr:"Queda registrado sin nombrar marcas.",
+    dd:"application/platform_profile.py:176,235",t:"Falta"},
+   {c:"cal.prf",nm:"Persistir el perfil",e:"warn",
+    qu:"Que la calibración sobreviva al cierre del programa",
+    co:"El perfil se guarda en disco y se vuelve a leer al abrir.",
+    cr:"Se guarda con procedencia (cuándo, con qué hardware) y se puede releer.",
+    dd:"platform_profile.py — duplicado en dos carpetas distintas",t:"Parcial"},
+   {c:"cal.fnd",nm:"Fondo (dark)",e:"warn",n:1,
+    qu:"Medir el nivel que marca el detector cuando NO hay señal, para poder restarlo después",
+    co:"Con el láser apagado se toma un espectro en modo libre y se guarda como referencia.",
+    cr:"El fondo se captura a la MISMA integración que la medición, y nunca se aplica un fondo de otra integración en silencio.",
+    dd:"captura: presentation/main_window.py:867 · resta: spec_pipeline.py:40",t:"La resta sí (6 pruebas); la captura no"},
+   {c:"cal.rui",nm:"Ruido electrónico",e:"none",n:1,
+    qu:"Saber cuánto «tiembla» el detector cuando no pasa nada",
+    co:"Se mide la dispersión del fondo en cada canal.",
+    cr:"Produce el piso de ruido que usa el control de calidad para decidir si una señal es real.",
+    dd:"no existe",t:"Falta"},
+   {c:"cal.rsp",nm:"Respuesta espectral",e:"none",n:1,l:1,
+    qu:"Hacer que los canales sean comparables entre sí",
+    co:"Con una lámpara patrón se mide cuánto responde cada módulo y se calculan factores de corrección.",
+    cr:"Los canales quedan comparables. Restar el fondo NO alcanza para esto.",
+    dd:"no existe · necesita lámpara patrón",t:"Falta"},
+   {c:"cal.spt",nm:"Diámetro del spot",e:"none",n:1,l:1,
+    qu:"Saber de qué tamaño es la marca que deja cada disparo",
+    co:"Se mide el diámetro del haz en el plano donde está enfocado.",
+    cr:"El paso de la grilla se deriva de este número, en vez de escribirlo a mano en un archivo.",
+    dd:"no existe",t:"Falta"}]},
+
+ {c:"pln",h:168,nm:"Planificar la ROI",
+  qu:"Definir qué puntos de la muestra se van a medir",
+  co:"Se marca una región sobre la micrografía en vivo y se convierte en una lista de puntos.",
+  L:[
+   {c:"pln.roi",nm:"Definir la región",e:"ok",
+    qu:"Elegir sobre la foto qué parte de la muestra interesa",
+    co:"Se dibuja la región de interés sobre la micrografía.",
+    cr:"La región queda en píxeles, junto con la imagen sobre la que se marcó.",
+    dd:"presentation/preview_panel.py",t:"Falta"},
+   {c:"pln.pts",nm:"Generar los puntos",e:"warn",
+    qu:"Convertir la región en una lista concreta de lugares a medir",
+    co:"Se recorre la región con un paso determinado y se guarda el plan en un archivo.",
+    cr:"Paso y cobertura reproducibles, y el paso se deriva del diámetro del spot medido.",
+    dd:"service/scan_service.py — hoy el paso sale del archivo de configuración",t:"Falta"},
+   {c:"pln.val",nm:"Validar contra la envolvente",e:"warn",
+    qu:"No dejar entrar al plan un punto al que la platina no puede llegar",
+    co:"Cada punto se verifica contra los límites de recorrido antes de aceptarlo.",
+    cr:"Se rechaza al planificar, no al intentar moverse.",
+    dd:"por auditar",t:"Falta"}]},
+
+ {c:"lmp",h:128,nm:"Limpiar",
+  qu:"Acondicionar la superficie antes de medir",
+  co:"Pulsos de limpieza sobre el punto, para sacar contaminación superficial.",
+  L:[
+   {c:"lmp.rec",nm:"Receta de limpieza",e:"none",
+    qu:"Sacar la capa superficial sin registrar ese disparo como dato",
+    co:"Se entregan N pulsos previos sobre el punto y se descarta lo que emitan.",
+    cr:"Entrega N pulsos y NO registra espectro.",
+    dd:"no existe",t:"Falta"},
+   {c:"lmp.ord",nm:"Orden respecto del barrido",e:"none",
+    qu:"Decidir si se limpia todo primero o cada punto justo antes de medirlo",
+    co:"Sin decidir. Cambia el recorrido y tiene consecuencia física: recontaminación entre limpiar y medir, contra tiempo total de sesión.",
+    cr:"La estrategia queda decidida y registrada junto con el dato.",
+    dd:"no existe · sin decidir",t:"Falta"}]},
+
+ {c:"afn",h:42,nm:"Afinar",
+  qu:"Optimizar el foco y el retardo contra ESTA muestra en particular",
+  co:"A diferencia de calibrar, acá lo que se ajusta depende de la muestra puesta.",
+  L:[
+   {c:"afn.foc.met",nm:"Métrica de foco",e:"none",
+    qu:"Tener un número que diga «esto está más enfocado que aquello»",
+    co:"Se calcula la nitidez de la micrografía, o la intensidad de la señal, en la posición actual.",
+    cr:"La métrica es monótona alrededor del óptimo — verificable con imágenes desenfocadas a propósito, sin hardware.",
+    dd:"no existe",t:"Falta"},
+   {c:"afn.foc.bus",nm:"Búsqueda del óptimo",e:"none",
+    qu:"Encontrar la posición de mejor foco sin tantear a ciegas",
+    co:"Se recorre el rango midiendo la métrica hasta converger.",
+    cr:"Converge en un número acotado de pasos y deja registrado qué eligió y con qué métrica.",
+    dd:"no existe",t:"Falta"},
+   {c:"afn.foc.prv",nm:"Quién mueve el foco",e:"none",
+    qu:"Que el procedimiento funcione sin saber QUIÉN mueve el foco",
+    co:"Puede ser el eje Z de la platina, la lente del láser movida a mano, o una lente motorizada el día que exista. DECISIÓN PENDIENTE: se resuelve con matriz ponderada.",
+    cr:"Si no hay ningún proveedor de foco, el procedimiento se declara no disponible y lo dice. Nunca falla por sorpresa.",
+    dd:"la capacidad de mover en Z YA existe: hal/base_stage.py:30 · thorlabs_stage.py:43",t:"Falta"},
+   {c:"afn.del.brd",nm:"Barrido de retardos",e:"warn",
+    qu:"Probar distintos retardos entre el disparo y la medición",
+    co:"Se recorre un rango de retardos y se guarda un espectro por cada uno.",
+    cr:"Recorre el rango declarado de forma reproducible.",
+    dd:"existe, atrapado en la interfaz gráfica (258 líneas)",t:"Falta"},
+   {c:"afn.del.snr",nm:"Elegir por señal-ruido",e:"warn",
+    qu:"Quedarse con el retardo que da el mejor espectro",
+    co:"Se compara la relación entre la señal y el fondo en cada retardo probado, y se elige el mejor.",
+    cr:"El retardo elegido mejora la relación señal-ruido respecto del valor por defecto.",
+    dd:"la métrica existe en spec_pipeline.py:214, sin cablear",t:"Falta"},
+   {c:"afn.del.apl",nm:"Aplicar el retardo",e:"ok",
+    qu:"Que el retardo elegido efectivamente se use en cada medición",
+    co:"Se configura el retardo en el espectrómetro antes de cada adquisición.",
+    cr:"Si el equipo no soporta configurarlo, el sistema degrada con gracia Y LO DICE.",
+    dd:"hal/base_spectrometer.py",t:"Falta"}]},
+
+ {c:"brd",h:18,nm:"Barrer",
+  qu:"Recorrer los puntos del plan y producir un dato por punto",
+  co:"En bucle: mover → fotografiar → disparar → adquirir → controlar calidad → guardar.",
+  L:[
+   {c:"brd.mov",nm:"Mover al punto",e:"ok",
+    qu:"Poner el punto de la muestra bajo el láser",
+    co:"Se ordena el movimiento en X e Y y se espera a que la mecánica se estabilice.",
+    cr:"La platina queda dentro de tolerancia del punto pedido.",
+    dd:"service/scan_service.py",t:"Cubierto"},
+   {c:"brd.mic",nm:"Micrografía del punto",e:"ok",
+    qu:"Dejar registro visual de cómo estaba la superficie antes y después",
+    co:"Captura previa y posterior al disparo, con la corrección de defectos ya aplicada.",
+    cr:"Las dos imágenes quedan guardadas y asociadas al punto.",
+    dd:"hal/defect_correction.py",t:"Cubierto (13 pruebas)"},
+   {c:"brd.dsp",nm:"Disparar el láser",e:"ok",
+    qu:"Entregar al punto exactamente N pulsos controlados",
+    co:"Una secuencia atómica que arma, dispara y se detiene sola.",
+    cr:"Entrega exactamente N pulsos y se detiene solo. Cero disparos fuera de la ráfaga.",
+    dd:"laser_proxy.py · service/libs_point_step.py",t:"Falta"},
+   {c:"brd.snc",nm:"Sincronía armar → disparar",e:"warn",n:1,
+    qu:"Que el espectrómetro esté escuchando ANTES de que el láser dispare",
+    co:"Se lanza la adquisición en un hilo aparte, RECIÉN DESPUÉS se dispara, y se espera con un tope de tiempo.",
+    cr:"El hilo de adquisición está vivo antes del primer pulso. Invertir el orden causa que se pierda el dato: la señal llega mientras nadie escucha.",
+    dd:"implementado DOS VECES: libs_point_step.py y main_window.py:951 — pueden divergir",t:"Falta"},
+   {c:"brd.adq",nm:"Adquirir el espectro",e:"ok",
+    qu:"Capturar la luz del plasma en el instante correcto",
+    co:"El espectrómetro se dispara por la señal eléctrica que emite el láser al disparar.",
+    cr:"Un espectro temporalmente correlacionado por cada disparo.",
+    dd:"hal/drivers/ocean_spectrometer.py",t:"Cubierto (5 pruebas)"},
+   {c:"brd.qcp.pls",nm:"¿Se formó plasma?",e:"none",
+    qu:"Distinguir un disparo que funcionó de uno que no",
+    co:"Se compara la señal neta contra el fondo con un umbral.",
+    cr:"Un punto sin plasma queda marcado como inválido, con su razón escrita.",
+    dd:"no existe",t:"Falta"},
+   {c:"brd.qcp.sat",nm:"¿Saturó el detector?",e:"warn",
+    qu:"Detectar cuando la señal fue tan fuerte que el dato no sirve",
+    co:"Se mide qué fracción del espectro llegó al máximo que el detector puede representar.",
+    cr:"Queda marcado si superó el umbral.",
+    dd:"el controlador ya expone el dato de saturación",t:"Parcial"},
+   {c:"brd.qcp.snr",nm:"Señal-ruido de línea",e:"none",
+    qu:"Decidir si una línea espectral es señal real o ruido",
+    co:"Se compara la altura de la línea contra el piso de ruido medido en la calibración.",
+    cr:"Se calcula contra el piso real del detector, no contra un número fijo.",
+    dd:"no existe",t:"Falta"},
+   {c:"brd.grd.dat",nm:"Guardar el dato",e:"ok",
+    qu:"Persistir el resultado de cada punto",
+    co:"Imagen, espectro y metadatos de posición, por punto.",
+    cr:"Cada punto queda con su registro completo en disco.",
+    dd:"service/scan_service.py",t:"Cubierto"},
+   {c:"brd.grd.prc",nm:"Guardar la procedencia",e:"none",n:1,
+    qu:"Que dentro de seis meses se pueda auditar CÓMO se midió cada punto",
+    co:"Junto al dato se guarda el perfil completo de puesta a punto: qué fondo, qué retardo, qué calibración, qué módulos.",
+    cr:"Un espectro guardado se puede reconstruir sin depender de la memoria de nadie.",
+    dd:"no existe",t:"Falta"}]},
+
+ {c:"seg",h:352,nm:"Cerrar seguro",
+  qu:"Dejar el sistema en estado seguro al terminar",
+  co:"Frenar lo que esté corriendo y apagar cada instrumento en un orden fijo. Es la rama que VALIDÓ la regla de corte: se construyó antes de definirla, y aplicarla después reprodujo exactamente estas cinco piezas.",
+  L:[
+   {c:"seg.frn",nm:"Frenar el barrido",e:"ok",
+    qu:"Que nada siga avanzando mientras se apagan los equipos",
+    co:"Se le pide al barrido que pare y se lo espera un tiempo acotado.",
+    cr:"El barrido deja de avanzar ANTES de tocar ningún instrumento.",
+    dd:"service/shutdown_service.py:154-170",t:"Cubierto"},
+   {c:"seg.ord",nm:"Orden fijo por rol",e:"ok",
+    qu:"Apagar siempre en el mismo orden, por razones físicas",
+    co:"Espectrómetro → láser → platina → cámara → Arduino. El espectrómetro va primero para soltar el puerto USB; el láser antes que la platina para que nada se mueva con el equipo armado.",
+    cr:"Es un invariante de seguridad, NO configuración: no se lee de ningún archivo. Si fuera configurable, se podría configurar mal.",
+    dd:"service/shutdown_service.py:173-177",t:"Cubierto (por mutación)"},
+   {c:"seg.rec",nm:"Cada equipo, su receta",e:"ok",
+    qu:"Que quien coordina el apagado no necesite saber de marcas",
+    co:"Cada controlador sabe qué hacerle a SU instrumento; el coordinador solo decide el orden.",
+    cr:"Cero marcas en el código del coordinador. Un controlador que se olvide de declarar su apagado NO SE PUEDE construir.",
+    dd:"hal/base_*.py + 10 controladores",t:"Cubierto (por análisis del código)"},
+   {c:"seg.tec",nm:"Techo de espera",e:"ok",
+    qu:"Que un instrumento colgado no cuelgue todo el programa",
+    co:"Cada equipo tiene un límite de tiempo; si lo pasa, se registra y el cierre sigue.",
+    cr:"Se avisa a quien opera que ese equipo pudo quedar sin cerrar del todo, y el cierre continúa.",
+    dd:"service/shutdown_service.py:52-57,136-144",t:"Cubierto"},
+   {c:"seg.idm",nm:"Idempotente y no lanza",e:"ok",
+    qu:"Que apretar dos veces «salir» no rompa nada",
+    co:"La segunda llamada no hace nada, y la secuencia nunca propaga un error hacia arriba.",
+    cr:"Segunda llamada = sin efecto. Nunca propaga excepción.",
+    dd:"service/shutdown_service.py:105-107",t:"Cubierto"}]}
+];
+
+const GLOSS = [
+ ["LIBS","Laser-Induced Breakdown Spectroscopy","Se dispara un láser muy intenso sobre un punto diminuto de la muestra. Ese pulso vaporiza una cantidad ínfima de material y forma un plasma. Al enfriarse, el plasma emite luz en colores que son característicos de cada elemento químico. Midiendo esa luz se sabe de qué está hecha la muestra, sin prepararla ni destruirla más que ese punto."],
+ ["Plasma","",  "El cuarto estado de la materia: un gas tan caliente que sus átomos perdieron electrones. Acá dura microsegundos y es lo que emite la luz que se mide."],
+ ["Espectro","","La luz separada por colores, como un arcoíris pero medido punto por punto. Cada elemento químico emite en longitudes de onda propias: son su huella digital."],
+ ["Espectrómetro","","El instrumento que separa la luz en colores y mide cuánta hay en cada uno. El de este sistema tiene cuatro módulos, cada uno mirando un tramo distinto del espectro."],
+ ["Canal / módulo","","Cada uno de los espectrómetros del conjunto. Cubren tramos distintos: ultravioleta, visible e infrarrojo cercano. Juntos cubren más rango que uno solo."],
+ ["Fondo / dark","","Lo que el detector marca cuando NO le llega señal: corriente oscura del sensor más luz ambiente. Hay que medirlo y restarlo, porque si no cada módulo queda en un nivel distinto y los espectros no se pueden comparar."],
+ ["Retardo (gate delay)","","El tiempo que se espera entre el disparo del láser y el momento de empezar a medir. Importa porque al principio el plasma emite un resplandor blanco que tapa todo; hay que esperar a que ese resplandor baje y queden las líneas de los elementos. Se mide en microsegundos."],
+ ["Saturación","","Cuando llega tanta luz que el detector se va al máximo de su escala y no puede representar más. El dato se pierde: hay que detectarlo y descartarlo."],
+ ["Señal-ruido (SNR)","Signal-to-Noise Ratio","Cuánto se destaca lo que queremos medir por encima del ruido de fondo. Es el criterio para decidir si una línea espectral es real."],
+ ["Micrografía","","La foto de la muestra tomada por la cámara del microscopio. Sobre ella se eligen los puntos a medir."],
+ ["ROI","Region Of Interest","La región de la micrografía que interesa medir. Se marca sobre la foto y de ahí sale la lista de puntos."],
+ ["Platina","stage","La mesa motorizada que mueve la muestra. Se le ordena ir a coordenadas en milímetros; ella no sabe nada de la foto."],
+ ["Spot","","La marca que deja cada disparo sobre la muestra. Su diámetro determina cuán fino puede ser el mapa: si los puntos se toman más separados que el spot, quedan huecos sin medir."],
+ ["Calibración píxel↔mm","","La cuenta que traduce «este píxel de la foto» a «estos milímetros de la platina». Si está mal, el sistema mueve la muestra a cualquier lado aunque la platina funcione perfecto."],
+ ["Transformación afín","","Una forma sencilla de esa traducción: contempla desplazamiento, rotación, escala e inclinación. Seis parámetros."],
+ ["Homografía","","Una versión más completa: además contempla la perspectiva, es decir que la cámara mire la mesa en ángulo. Ocho parámetros. En este sistema se calcula pero todavía no se usa."],
+ ["HAL","Hardware Abstraction Layer","La capa que traduce «mové la platina» a las órdenes concretas de una marca. Gracias a ella, cambiar de marca de instrumento no obliga a reescribir el resto del sistema."],
+ ["Capacidad","","Lo que un equipo SABE hacer, descrito sin nombrar su marca: «mover en 2D», «disparar», «adquirir». El sistema pide capacidades, no marcas."],
+ ["Controlador / driver","","El pedazo de software que habla con una marca concreta de instrumento e implementa sus capacidades."],
+ ["Gemelo simulado","","Una versión falsa de cada instrumento que produce datos de la misma forma que el real. Permite desarrollar y probar el sistema completo sin tener el laboratorio encendido."],
+ ["WBS","Work Breakdown Structure","Estructura de descomposición del trabajo: partir un proyecto en piezas cada vez más chicas hasta que cada una se pueda asignar, estimar y verificar. Este documento es exactamente eso."],
+ ["Globito","","Como le decimos acá a cada nodo del WBS. Tiene un código de tres letras y los hijos cuelgan con un punto."],
+ ["Criterio de aceptación","","La frase que dice cuándo una tarea está terminada, escrita de forma que se pueda verificar con una prueba automática. Es lo que separa «creo que anda» de «se comprobó que anda»."],
+ ["Trazabilidad","","Poder reconstruir después cómo se obtuvo un dato: con qué calibración, qué fondo, qué retardo. Sin eso, un resultado no se puede auditar ni defender."],
+ ["Microplásticos","","Fragmentos de plástico menores a 5 mm. Identificar de qué polímero son, y qué llevan adherido, es el problema que este instrumento ataca."]
+];
+
+const LINKS = [
+ ["Laser-induced breakdown spectroscopy","https://en.wikipedia.org/wiki/Laser-induced_breakdown_spectroscopy","La técnica completa: cómo se forma el plasma y por qué su luz identifica elementos."],
+ ["Plasma (physics)","https://en.wikipedia.org/wiki/Plasma_(physics)","Qué es el cuarto estado de la materia y por qué emite luz al enfriarse."],
+ ["Microplastics","https://en.wikipedia.org/wiki/Microplastics","El problema ambiental que motiva el instrumento."],
+ ["Work breakdown structure","https://en.wikipedia.org/wiki/Work_breakdown_structure","El método de descomposición que estructura este documento."],
+ ["Signal-to-noise ratio","https://en.wikipedia.org/wiki/Signal-to-noise_ratio","El criterio que decide si una línea espectral es real."],
+ ["Dark-frame subtraction","https://en.wikipedia.org/wiki/Dark-frame_subtraction","Por qué hay que medir y restar el fondo del detector."],
+ ["Affine transformation","https://en.wikipedia.org/wiki/Affine_transformation","La matemática detrás de la calibración píxel ↔ milímetro."],
+ ["Homography","https://en.wikipedia.org/wiki/Homography","La versión que además contempla la perspectiva de la mesa."],
+ ["Hardware abstraction layer","https://en.wikipedia.org/wiki/Hardware_abstraction_layer","Por qué el sistema habla por capacidad y no por marca."],
+ ["Spectrometer","https://en.wikipedia.org/wiki/Spectrometer","Cómo se separa la luz en colores para medirla."]
+];
+
+const EST = {ok:["ok","implementado"], warn:["warn","parcial"], none:["none","no existe"]};
+const esc = s => String(s).replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const path = c => { const p=c.split("."); let o="mLB", out=[]; for(let i=0;i<p.length;i++){ out.push(p.slice(0,i+1).join(".")); } return [o, ...out]; };
+
+let uid = 0;
+const tree = document.getElementById("tree");
+
+BRANCHES.forEach(b => {
+  const bid = "b"+(++uid);
+  const art = document.createElement("article");
+  art.className = "branch";
+  art.style.setProperty("--h", b.h);
+
+  const leaves = b.L.map(f => {
+    const fid = "f"+(++uid);
+    const [est, estTxt] = EST[f.e];
+    const ruta = path(f.c).map((x,i,a) =>
+      i===a.length-1 ? `<b>${esc(x)}</b>` : esc(x)
+    ).join(" &rsaquo; ");
+    return `
+      <div class="leaf">
+        <button class="lhead" aria-expanded="false" aria-controls="${fid}" data-t="${fid}">
+          <span class="dot ${est}" aria-hidden="true"></span>
+          <span class="lcode">${esc(f.c)}</span>
+          <span class="lnm">${esc(f.nm)}</span>
+          ${f.n ? '<span class="chip new">nuevo</span>' : ''}
+          ${f.l ? '<span class="chip lab">lab</span>' : ''}
+          <span class="chip ${est}">${estTxt}</span>
+          <span class="caret" aria-hidden="true"></span>
+        </button>
+        <div class="ficha" id="${fid}" hidden>
+          <div class="ruta">${ruta}</div>
+          <dl style="margin:0">
+            <div class="row"><dt>Qué</dt><dd>${esc(f.qu)}</dd></div>
+            <div class="row"><dt>Cómo</dt><dd class="soft">${esc(f.co)}</dd></div>
+            <div class="row"><dt>Criterio</dt><dd>${esc(f.cr)}</dd></div>
+            <div class="row"><dt>Dónde vive</dt><dd class="soft"><span class="mono">${esc(f.dd)}</span></dd></div>
+            <div class="row"><dt>Prueba</dt><dd class="soft">${esc(f.t)}</dd></div>
+          </dl>
+        </div>
+      </div>`;
+  }).join("");
+
+  art.innerHTML = `
+    <button class="bhead" aria-expanded="false" aria-controls="${bid}" data-t="${bid}">
+      <span class="code">${esc(b.c)}</span>
+      <span class="btitles">
+        <span class="nm">${esc(b.nm)}</span>
+        <span class="qu">${esc(b.qu)}</span>
+      </span>
+      <span class="bmeta">
+        <span class="count">${b.L.length} tareas</span>
+        <span class="caret" aria-hidden="true"></span>
+      </span>
+    </button>
+    <div class="bbody" id="${bid}" hidden>
+      <p class="bcomo"><b>Cómo se hace</b>${esc(b.co)}</p>
+      ${leaves}
+    </div>`;
+  tree.appendChild(art);
+});
+
+document.addEventListener("click", e => {
+  const btn = e.target.closest("[data-t]");
+  if (!btn) return;
+  const panel = document.getElementById(btn.dataset.t);
+  const open = btn.getAttribute("aria-expanded") === "true";
+  btn.setAttribute("aria-expanded", String(!open));
+  panel.hidden = open;
+});
+
+// Resumen numérico, contado del árbol
+const all = BRANCHES.flatMap(b => b.L);
+const nOk = all.filter(f => /^Cubierto/.test(f.t)).length;
+const nImp = all.filter(f => f.e === "ok" || f.e === "warn").length;
+document.getElementById("stats").innerHTML = `
+  <div class="stat"><span class="n">${all.length}</span><span class="l">tareas verificables</span></div>
+  <div class="stat ok"><span class="n">${nOk}</span><span class="l">con prueba que las cubre</span></div>
+  <div class="stat warn"><span class="n">${nImp - nOk}</span><span class="l">construidas, sin prueba</span></div>
+  <div class="stat none"><span class="n">${all.length - nImp}</span><span class="l">todavía sin construir</span></div>`;
+
+document.getElementById("gloss").innerHTML = GLOSS.map(([t,u,d]) => `
+  <div class="term">
+    <dt>${esc(t)}${u ? `<span class="u">${esc(u)}</span>` : ""}</dt>
+    <dd>${esc(d)}</dd>
+  </div>`).join("");
+
+document.getElementById("links").innerHTML = LINKS.map(([t,h,d]) => `
+  <a class="lk" href="${esc(h)}" target="_blank" rel="noopener">
+    <span class="t">${esc(t)}</span><span class="d">${esc(d)}</span>
+  </a>`).join("");
+
+// La primera rama abierta, para que se vea de entrada cómo funciona
+const first = document.querySelector(".bhead");
+if (first) first.click();
+</script>
+
+</body>
+</html>
