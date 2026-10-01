@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>microLIBS — documentación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f6f5f2; --surface:#fffefc; --fg:#1d2328; --muted:#5f6a72; --line:#ddd9d2;
+  --ac:#0f6e78; --ac-soft:#e2f0f1; --warm:#a65b14;
+  --fd:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --fb:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --fm:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#15181b; --surface:#1c2024; --fg:#e8e6e2; --muted:#9aa4ab; --line:#2f353a;
+  --ac:#55c3cc; --ac-soft:#113034; --warm:#e0a062; color-scheme:dark;}}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--fb);font-size:16px;
+  line-height:1.6;margin:0}
+.wrap{max-width:48rem;margin:0 auto;padding-inline:20px;padding-block:48px 72px}
+h1,h2,h3{font-family:var(--fd);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:2.1rem;font-weight:700;letter-spacing:-.02em}
+h2{font-size:1.1rem;font-weight:600;margin-top:2.8rem;margin-bottom:.5rem}
+h3{font-size:1rem;font-weight:600}
+p{margin:.7rem 0}
+.meta{font-family:var(--fm);font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:1.4rem}
+.lede{font-size:1.1rem;color:var(--muted)}
+a{color:var(--ac)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:1.2rem}
+@media (max-width:620px){.cards{grid-template-columns:1fr}}
+.card{display:block;border:1px solid var(--line);border-radius:10px;background:var(--surface);
+  padding:16px 18px;text-decoration:none;color:inherit;min-width:0;
+  transition:border-color .14s,transform .14s}
+.card:hover{border-color:var(--ac);transform:translateY(-1px)}
+.card h3{color:var(--ac);margin-bottom:.35rem}
+.card p{font-size:.9rem;color:var(--muted);margin:0}
+.card.destacada{border-left:3px solid var(--ac)}
+table{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:.6rem}
+td{padding:9px 10px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{white-space:nowrap;padding-right:18px;font-family:var(--fd);font-weight:500}
+@media (max-width:620px){td{display:block;border:0;padding:2px 0}
+  td:first-child{padding-top:10px} tr{display:block;border-bottom:1px solid var(--line);padding-bottom:8px}}
+.nota{border:1px solid var(--line);border-left:3px solid var(--warm);border-radius:9px;
+  background:var(--surface);padding:16px 18px;margin-top:1.2rem}
+.nota p:first-child{margin-top:0} .nota p:last-child{margin-bottom:0}
+.foot{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--line);
+  font-size:.85rem;color:var(--muted)}
+code{font-family:var(--fm);font-size:.85em;background:var(--ac-soft);color:var(--ac);
+  padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="meta">CITEDEF · CNEA</p>
+<h1>microLIBS</h1>
+<p class="lede">Sistema de mapeo elemental por espectroscopía de plasma inducido por láser,
+construido integrando instrumentos que ya estaban en el laboratorio: un láser Nd:YAG
+pulsado, un espectrómetro de cuatro módulos, platinas y cámaras. Varios sin soporte del
+fabricante.</p>
+<p>Recorre una región de interés y, en cada punto, desplaza la platina, registra la
+superficie antes y después del disparo, entrega una ráfaga de pulsos y adquiere el
+espectro. Todo queda en un directorio autocontenido. Esta documentación cubre
+<b>los instrumentos y lo que sabemos de ellos</b>.</p>
+
+<h2>Páginas para leer</h2>
+<div class="cards">
+  <a class="card destacada" href="medir_el_banco.html">
+    <h3>Medir el banco</h3>
+    <p>Qué se calibra y qué se caracteriza, y en qué estado está hoy el espectrómetro y la
+    óptica. Si vas a leer una sola, es ésta.</p>
+  </a>
+  <a class="card" href="RedPLA_y_el_banco.html">
+    <h3>Aprendizajes de LIBS-Spectra</h3>
+    <p>Por qué conviene no confundir el sistema de control con el banco de medición, y
+    cuatro cosas que se midieron sobre datos ya archivados.</p>
+  </a>
+  <a class="card" href="taller_del_spot.html">
+    <h3>Taller del spot</h3>
+    <p>Calculadora del tamaño de spot con las lentes reales de la mesa, y el diagrama de
+    Ishikawa 6M del sistema.</p>
+  </a>
+  <a class="card" href="globitos_microLIBS.html">
+    <h3>Globitos de microLIBS</h3>
+    <p>El árbol de capacidades: qué hace cada parte del sistema y cómo se llama.</p>
+  </a>
+</div>
+<p style="font-size:.9rem;color:var(--muted);margin-top:.9rem">Todas traen glosario y están
+escritas para un equipo multidisciplinario: no hace falta saber óptica ni programación.
+Si alguien recibe uno de estos archivos suelto y no sabe qué hacer con él, hay una página
+para eso — <a href="como_abrir_las_paginas.html">cómo abrir estas páginas</a>.</p>
+
+<h2>El instrumento</h2>
+<table>
+  <tr><td><a href="instrumentos/LIBS2500plus.html">LIBS2500plus</a></td>
+      <td>Lo que sabemos del espectrómetro y <b>no está en los manuales</b>: la operación
+      canal por canal, el banco de registros del FPGA, y la historia de las reparaciones a
+      nivel de componente.</td></tr>
+  <tr><td><a href="instrumentos/datos_de_manuales_2026-09-27.html">Datos de placa y de manual</a></td>
+      <td>Transcripción literal de los manuales de los cuatro instrumentos, cada tabla con
+      su fuente. Incluye las discrepancias entre manual, chapa y medición de fábrica.</td></tr>
+  <tr><td><a href="instrumentos/montaje_optico.html">Montaje óptico</a></td>
+      <td>Dónde viven las fotografías del banco y qué muestran.</td></tr>
+</table>
+
+<h2>Operación</h2>
+<table>
+  <tr><td><a href="operacion/calibracion_en_longitud_de_onda.html">Calibración en longitud de onda</a></td>
+      <td>Qué fuente usar, qué líneas de referencia, cómo ajustar y cómo saber si salió
+      bien.</td></tr>
+  <tr><td><a href="operacion/arranque_y_disparo_manual.html">Arranque y disparo</a></td>
+      <td>Lista de comprobación previa a la sesión, armado, disparo, guardado y salida
+      segura.</td></tr>
+  <tr><td><a href="operacion/scan_paso_a_paso.html">El scan paso a paso</a></td>
+      <td>Generación del plan de puntos, parámetros del barrido y dónde queda cada
+      archivo.</td></tr>
+</table>
+
+<h2>Lo medido</h2>
+<table>
+  <tr><td><a href="diagnosticos/2026-09-30_hallazgos_de_montaje.html">Hallazgos de montaje</a></td>
+      <td>Ocho cosas medibles a partir de lo que el sistema ya había registrado, cada una
+      con su fuente y con qué haría falta para cerrarla. Es la agenda de laboratorio.</td></tr>
+  <tr><td><a href="sesiones/capturas_hito.html">Sesiones hito</a></td>
+      <td>Qué sesión es cuál, dónde vive y qué se verificó de ella. Existe porque el
+      identificador que citan los informes —fecha y hora— no alcanza para encontrarlas.</td></tr>
+</table>
+
+<h2>Por dónde empezar</h2>
+<table>
+  <tr><td>Entender el instrumento</td><td><a href="medir_el_banco.html">Medir el banco</a>,
+      y después <a href="instrumentos/LIBS2500plus.html">LIBS2500plus</a>.</td></tr>
+  <tr><td>Operarlo</td><td><a href="operacion/arranque_y_disparo_manual.html">Arranque y
+      disparo</a>, y <a href="operacion/scan_paso_a_paso.html">el scan paso a paso</a>.</td></tr>
+  <tr><td>Buscar un dato</td><td><a href="instrumentos/datos_de_manuales_2026-09-27.html">Datos
+      de placa</a> tiene las tablas con su fuente, y <a href="sesiones/capturas_hito.html">Sesiones
+      hito</a> dice de qué corrida salió cada número.</td></tr>
+</table>
+
+<div class="nota">
+  <h3>Una advertencia que vale para todo lo que hay acá</h3>
+  <p>Buena parte de lo que se documenta son <b>limitaciones medidas, no resueltas</b>. El
+  spot es varias veces mayor que el objetivo de diseño, un módulo espectral tiene la escala
+  de longitudes de onda corrida, y la energía del láser nunca se midió en el plano de la
+  muestra. Están escritas con sus números y con lo que haría falta para cerrarlas.</p>
+  <p>Es deliberado. El sistema registra cada sesión de forma autocontenida, y eso permitió
+  medir sobre datos de hace diez meses cosas que en su momento nadie se preguntó,
+  <b>sin repetir ningún experimento</b>. Un sistema que no encontrara nada no estaría
+  funcionando.</p>
+</div>
+
+<p class="foot">El código y estos documentos están en
+<a href="https://github.com/CinthyaToro/microLIBS">github.com/CinthyaToro/microLIBS</a>.
+Instrumental del laboratorio de CNEA; desarrollo de CITEDEF.</p>
+
+</div>
+</body>
+</html>
