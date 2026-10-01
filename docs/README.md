@@ -18,6 +18,7 @@ escritas para un equipo multidisciplinario — no hace falta saber óptica ni pr
 
 | | |
 |---|---|
+| [**Aprendizajes de LIBS-Spectra**](RedPLA_y_el_banco.html) | Lo que salió de preparar la nota técnica: por qué conviene no confundir el sistema de control con el banco de medición, y cuatro cosas del banco que estaban sin medir y se midieron sobre datos ya archivados. |
 | [**Medir el banco**](medir_el_banco.html) | Qué se calibra y qué se caracteriza, y en qué estado está hoy el espectrómetro y la óptica. Si vas a leer una sola, es ésta. |
 | [**Taller del spot**](taller_del_spot.html) | Calculadora interactiva del tamaño de spot con las lentes reales de la mesa, y el diagrama de Ishikawa 6M del sistema. |
 | [**Globitos de microLIBS**](globitos_microLIBS.html) | El árbol de capacidades del sistema: qué hace cada parte y cómo se llama. |
